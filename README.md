@@ -1,1 +1,1 @@
-# Simulacion-S.O.
+# Simulador-S.O.
