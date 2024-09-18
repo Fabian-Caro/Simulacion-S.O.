@@ -1,17 +1,17 @@
 class Procesos:
-    def __init__(self, id, nombre, tamano, prioridad, recursos):
-        self.__id = id
+    def __init__(self, id_proceso, nombre, tamano, prioridad, recursos):
+        self.__id_proceso = id_proceso
         self.__nombre = nombre
         self.__tamano = tamano
         self.__prioridad = prioridad
         self.__recursos = recursos
         
-    def get_id(self):
-        return self.__id
+    def get_id_proceso(self):
+        return self.__id_proceso
     
-    def set_id(self, id):
-        if isinstance(id, str):
-            self.__id = id
+    def set_id(self, id_proceso):
+        if isinstance(id_proceso, str):
+            self.__id_proceso = id_proceso
         else:
             raise ValueError("ID debe ser una cadena de texto.")
         
@@ -53,7 +53,7 @@ class Procesos:
         
     def mostrar_info(self):
         return (
-            f"ID: {self.__id}, Nombre: {self.__nombre}, Tamaño: {self.__tamano}, "
+            f"ID: {self.__id_proceso}, Nombre: {self.__nombre}, Tamaño: {self.__tamano}, "
             f"Prioridad: {self.__prioridad}, "
             f"Recursos: {', '.join(self.__recursos)}"
             )

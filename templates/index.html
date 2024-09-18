@@ -37,11 +37,13 @@
                         <legend class="col-form-label col-sm-2 pt-0">Prioridad</legend>
                         <div class="col-sm-10">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="prioridad" id="conPrioridad" value="Sí" checked>
+                                <input class="form-check-input" type="radio" name="prioridad" id="conPrioridad"
+                                    value="Sí" checked>
                                 <label class="form-check-label" for="conPrioridad">Con prioridad</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="prioridad" id="sinPrioridad" value="No">
+                                <input class="form-check-input" type="radio" name="prioridad" id="sinPrioridad"
+                                    value="No">
                                 <label class="form-check-label" for="sinPrioridad">Sin prioridad</label>
                             </div>
                         </div>
@@ -50,19 +52,23 @@
                         <legend class="col-form-label col-sm-2 pt-0">Recursos</legend>
                         <div class="col-sm-10 offset-sm-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recurso1" name="recursos" value="Recurso1">
+                                <input class="form-check-input" type="checkbox" id="recurso1" name="recursos"
+                                    value="Recurso1">
                                 <label class="form-check-label" for="recurso1">Recurso 1</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recurso2" name="recursos" value="Recurso2">
+                                <input class="form-check-input" type="checkbox" id="recurso2" name="recursos"
+                                    value="Recurso2">
                                 <label class="form-check-label" for="recurso2">Recurso 2</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recurso3" name="recursos" value="Recurso3">
+                                <input class="form-check-input" type="checkbox" id="recurso3" name="recursos"
+                                    value="Recurso3">
                                 <label class="form-check-label" for="recurso3">Recurso 3</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recurso4" name="recursos" value="Recurso4">
+                                <input class="form-check-input" type="checkbox" id="recurso4" name="recursos"
+                                    value="Recurso4">
                                 <label class="form-check-label" for="recurso4">Recurso 4</label>
                             </div>
                         </div>
@@ -72,18 +78,36 @@
             </div>
             <div class="col-4">
                 <h1>Listos</h1>
-                {% if proceso %}
-                    <p>ID: {{ proceso.id }}</p>
-                    <p>Nombre: {{ proceso.nombre }}</p>
-                    <p>Tamaño: {{ proceso.tamano }}</p>
-                    <p>Prioridad: {{ proceso.prioridad }}</p>
-                    <p>Recursos: {{ proceso.recursos|join(', ') }}</p>
+                {% if procesos_listos %}
+                <ul>
+                    {% for proceso in procesos_listos %}
+                    <li>
+                        <strong>ID:</strong>{{ proceso.get_id_proceso() }} <br>
+                        <strong>Nombre:</strong>{{ proceso.get_nombre() }} <br>
+                        <strong>Tamaño:</strong>{{ proceso.get_tamano() }} <br>
+                        <strong>Prioridad:</strong>{{ proceso.is_prioridad() }} <br>
+                        <strong>Recursos:</strong>{{ proceso.get_recursos() }} <br>
+                    </li>
+                    {% endfor %}
+                </ul>
                 {% else %}
-                    <p>No se ha creado ningún proceso.</p>
+                <p>No hay procesos en la cola.</p>
                 {% endif %}
+                <form action="/ejecutar_proceso" method="post">
+                    <button type="submit" class="btn btn-success">Ejecutar Proceso</button>
+                </form>
             </div>
             <div class="col-4">
-                <h1>Ejecución</h1>
+                <h1>En Ejecución</h1>
+                {% if proceso_ejecucion %}
+                <p>ID: {{ proceso_ejecucion.get_id_proceso() }}</p>
+                <p>Nombre: {{ proceso_ejecucion.get_nombre() }}</p>
+                <p>Tamaño: {{ proceso_ejecucion.get_tamano() }}</p>
+                <p>Prioridad: {{ proceso_ejecucion.is_prioridad() }}</p>
+                <p>Recursos: {{ proceso_ejecucion.get_recursos() }}</p>
+                {% else %}
+                <p>No hay procesos en ejecución.</p>
+                {% endif %}
             </div>
         </div>
         <div class="row">
