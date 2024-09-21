@@ -35,28 +35,31 @@ def crear_proceso():
     
     # return render_template('index.html', procesos_listos=cola_listos, proceso_ejecucion=None)
 
-@app.route('/ejecutar', methods=['POST'])
-def Ejecutar():
-    global proceso_ejecucion
+# @app.route('/ejecutar', methods=['POST'])
+# def Ejecutar():
+#     global proceso_ejecucion
     
-    if proceso_ejecucion:
-        cola_listos.append(proceso_ejecucion)
-        proceso_ejecucion = None
+#     if proceso_ejecucion:
+#         cola_listos.append(proceso_ejecucion)
+#         proceso_ejecucion = None
         
-    if cola_listos:
-        proceso_ejecucion = cola_listos.pop(0)
+#     if cola_listos:
+#         proceso_ejecucion = cola_listos.pop(0)
         
-    return redirect(url_for('index'))
+#     return redirect(url_for('index'))
 
-##@app.route('/ejecutar_proceso', methods=['POST'])
-#def ejecutar_proceso():
+@app.route('/ejecutar_proceso', methods=['POST'])
+def ejecutar_proceso():
+   global proceso_ejecucion
+   if cola_listos:
+       proceso_ejecucion = cola_listos.pop(0)
 #    if cola_listos:
 #        proceso_a_ejecutar = cola_listos.pop(0)
         
 #        if len(cola_ejecución) == 0:
 #            cola_ejecución.append(proceso_a_ejecutar)
-#    
-#    return render_template('index.html', procesos_listos=cola_listos, proceso_ejecucion = cola_ejecución[0] if cola_ejecución else None)
-##
+   return redirect(url_for('index'))
+   # return render_template('index.html', procesos_listos=cola_listos, proceso_ejecucion = cola_ejecución[0] if cola_ejecución else None)
+
 if __name__ == '__main__':
     app.run(debug=True)
