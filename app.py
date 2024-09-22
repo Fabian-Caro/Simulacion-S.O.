@@ -1,15 +1,27 @@
 from flask import Flask, request, render_template, redirect, url_for
 from modelo.Procesos import Procesos
+from modelo.Recurso import Recurso
 
 app = Flask(__name__)
 
 cola_listos = []
 cola_ejecución = []
 proceso_ejecucion = None
+recursos = [
+    Recurso("001", "Disco duro", True),
+    Recurso("002", "Tarjeta gráfica", True),
+    Recurso("003", "Impresora", True),
+    Recurso("004", "Archivos", True),
+    Recurso("005", "Red", True),
+    Recurso("006", "Teclado", True),
+    Recurso("007", "Ratón", True),
+    Recurso("008", "Pantalla", True),
+    Recurso("009", "Parlante", True)
+]
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html', procesos_listos=cola_listos, proceso_ejecucion=proceso_ejecucion)
+    return render_template('index.html', procesos_listos=cola_listos, proceso_ejecucion=proceso_ejecucion, recursos=recursos)
 
 @app.route('/crear_proceso', methods=['POST'])
 def crear_proceso():
@@ -19,12 +31,11 @@ def crear_proceso():
     nombre = request.form.get('nombre')
     tamano = request.form.get('tamano')
     prioridad = request.form.get('prioridad')
-    recursos = [rec for rec in request.form.getlist('recursos')]
+    recursos_asignados = [rec for rec in recursos if rec.get_id_recurso() in request.form.getlist('recursos')]
     
     # Imprimir los datos en la consola para verificar
-    print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, Prioridad: {prioridad}, Recursos: {recursos}")
-
-    nuevo_proceso = Procesos(id_proceso, nombre, tamano, prioridad, recursos)
+    print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, Prioridad: {prioridad}, Recursos: {recursos_asignados}")
+    nuevo_proceso = Procesos(id_proceso, nombre, tamano, prioridad, recursos_asignados)
     
     cola_listos.append(nuevo_proceso)
     

@@ -51,26 +51,12 @@
                     <div class="row mb-3 p-2">
                         <legend class="col-form-label col-sm-2 pt-0">Recursos</legend>
                         <div class="col-sm-10 offset-sm-2">
+                            {% for recurso in recursos %}
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recurso1" name="recursos"
-                                    value="Recurso1">
-                                <label class="form-check-label" for="recurso1">Recurso 1</label>
+                                <input class="form-check-input" type="checkbox" id="recurso{{ loop.index }}" name="recursos" value="{{ recurso.get_id_recurso() }}">
+                                <label class="form-check-label" for="recurso{{ loop.index }}">{{ recurso.get_nombre_recurso() }}</label>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recurso2" name="recursos"
-                                    value="Recurso2">
-                                <label class="form-check-label" for="recurso2">Recurso 2</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recurso3" name="recursos"
-                                    value="Recurso3">
-                                <label class="form-check-label" for="recurso3">Recurso 3</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recurso4" name="recursos"
-                                    value="Recurso4">
-                                <label class="form-check-label" for="recurso4">Recurso 4</label>
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Crear</button>
@@ -86,7 +72,11 @@
                         <strong>Nombre:</strong>{{ proceso.get_nombre() }} <br>
                         <strong>Tamaño:</strong>{{ proceso.get_tamano() }} <br>
                         <strong>Prioridad:</strong>{{ proceso.is_prioridad() }} <br>
-                        <strong>Recursos:</strong>{{ proceso.get_recursos() }} <br>
+                        <strong>Recursos:</strong>
+                        {% for recurso in proceso.get_nombre_recursos() %}
+                            {{ recurso }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                        <br>
                     </li>
                     {% endfor %}
                 </ul>
@@ -104,7 +94,7 @@
                 <p>Nombre: {{ proceso_ejecucion.get_nombre() }}</p>
                 <p>Tamaño: {{ proceso_ejecucion.get_tamano() }}</p>
                 <p>Prioridad: {{ proceso_ejecucion.is_prioridad() }}</p>
-                <p>Recursos: {{ proceso_ejecucion.get_recursos() }}</p>
+                <p>Recursos: {{ proceso_ejecucion.get_nombre_recursos() }}</p>
                 {% else %}
                 <p>No hay procesos en ejecución.</p>
                 {% endif %}
