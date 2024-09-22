@@ -29,7 +29,10 @@ class Procesos:
     
     def set_tamano(self, tamano):
         if isinstance(tamano, (int, float)):
-            self.__tamano = tamano
+            if tamano >= 0:
+                self.__tamano = tamano
+            else:
+                self.__tamano = 0
         else:
             raise ValueError("Tamaño debe ser un número.")
     
