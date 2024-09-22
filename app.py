@@ -48,12 +48,16 @@ def crear_proceso():
         
 #     return redirect(url_for('index'))
 
+@staticmethod
+def de_ejecucion_a_listos():
+    proceso_ejecucion.set_tamano(int (proceso_ejecucion.get_tamano())-2)
+    cola_listos.append(proceso_ejecucion)
+
 @app.route('/ejecutar_proceso', methods=['POST'])
 def ejecutar_proceso():
    global proceso_ejecucion
    if cola_listos:
-       proceso_ejecucion.set_tamano(int (proceso_ejecucion.get_tamano())-2)
-       cola_listos.append(proceso_ejecucion)
+       de_ejecucion_a_listos()
        proceso_ejecucion = cola_listos.pop(0)
 
    return redirect(url_for('index'))
