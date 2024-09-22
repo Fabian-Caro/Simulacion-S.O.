@@ -52,13 +52,16 @@ def crear_proceso():
 def ejecutar_proceso():
    global proceso_ejecucion
    if cola_listos:
+       proceso_ejecucion.set_tamano(int (proceso_ejecucion.get_tamano())-2)
+       cola_listos.append(proceso_ejecucion)
        proceso_ejecucion = cola_listos.pop(0)
+
+   return redirect(url_for('index'))
 #    if cola_listos:
 #        proceso_a_ejecutar = cola_listos.pop(0)
-        
+
 #        if len(cola_ejecución) == 0:
 #            cola_ejecución.append(proceso_a_ejecutar)
-   return redirect(url_for('index'))
    # return render_template('index.html', procesos_listos=cola_listos, proceso_ejecucion = cola_ejecución[0] if cola_ejecución else None)
 
 if __name__ == '__main__':
