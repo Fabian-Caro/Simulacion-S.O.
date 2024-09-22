@@ -1,3 +1,5 @@
+from modelo.Recurso import Recurso
+
 class Procesos:
     def __init__(self, id_proceso, nombre, tamano, prioridad, recursos):
         self.__id_proceso = id_proceso
@@ -54,9 +56,24 @@ class Procesos:
         else:
             raise ValueError("Recursos debe ser una lista de booleanos")
         
+    def get_nombre_recursos(self):
+        return [recurso.get_nombre_recurso() for recurso in self.__recursos]
+    
     def mostrar_info(self):
+        recursos_nombres = ', '.join(recurso.get_nombre_recurso() for recurso in self.__recursos)
         return (
             f"ID: {self.__id_proceso}, Nombre: {self.__nombre}, Tamaño: {self.__tamano}, "
-            f"Prioridad: {self.__prioridad}, "
-            f"Recursos: {', '.join(self.__recursos)}"
+            f"Prioridad: {self.__prioridad}, Recursos: {recursos_nombres}"
             )
+    
+    recursos = [
+    Recurso("001", "Disco duro", True),
+    Recurso("002", "Tarjeta gráfica", True),
+    Recurso("003", "Impresora", True),
+    Recurso("004", "Archivos", True),
+    Recurso("005", "Red", True),
+    Recurso("006", "Teclado", True),
+    Recurso("007", "Ratón", True),
+    Recurso("008", "Pantalla", True),
+    Recurso("009", "Parlante", True)
+    ]
