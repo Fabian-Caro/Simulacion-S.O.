@@ -54,7 +54,7 @@ class Procesos:
         if isinstance(recursos, list) and all(isinstance(r, bool) for r in recursos):
             self.__recursos = recursos
         else:
-            raise ValueError("Recursos debe ser una lista de booleanos")
+            raise ValueError("Recursos debe ser una lista de enteros")
         
     def get_nombre_recursos(self):
         return [recurso.get_nombre_recurso() for recurso in self.__recursos]
@@ -66,14 +66,14 @@ class Procesos:
             f"Prioridad: {self.__prioridad}, Recursos: {recursos_nombres}"
             )
     
-    recursos = [
-    Recurso("001", "Disco duro", True),
-    Recurso("002", "Tarjeta gráfica", True),
-    Recurso("003", "Impresora", True),
-    Recurso("004", "Archivos", True),
-    Recurso("005", "Red", True),
-    Recurso("006", "Teclado", True),
-    Recurso("007", "Ratón", True),
-    Recurso("008", "Pantalla", True),
-    Recurso("009", "Parlante", True)
-    ]
+    # recursos = [
+    # Recurso("001", "Disco duro", None),
+    # Recurso("002", "Tarjeta gráfica", None),
+    # Recurso("003", "Impresora", None),
+    # Recurso("004", "Archivos", None),
+    # Recurso("005", "Red", None),
+    # Recurso("006", "Teclado", None),
+    # Recurso("007", "Ratón", None),
+    # Recurso("008", "Pantalla", None),
+    # Recurso("009", "Parlante", None)
+    # ]
