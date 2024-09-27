@@ -53,8 +53,10 @@
                         <div class="col-sm-10 offset-sm-2">
                             {% for recurso in recursos %}
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recurso{{ loop.index }}" name="recursos" value="{{ recurso.get_id_recurso() }}">
-                                <label class="form-check-label" for="recurso{{ loop.index }}">{{ recurso.get_nombre_recurso() }}</label>
+                                <input class="form-check-input" type="checkbox" id="recurso{{ loop.index }}"
+                                    name="recursos" value="{{ recurso.get_id_recurso() }}">
+                                <label class="form-check-label" for="recurso{{ loop.index }}">{{
+                                    recurso.get_nombre_recurso() }}</label>
                             </div>
                             {% endfor %}
                         </div>
@@ -68,33 +70,54 @@
                 <ul>
                     {% for proceso in procesos_listos %}
                     <li>
-                        <strong>ID:</strong>{{ proceso.get_id_proceso() }} <br>
-                        <strong>Nombre:</strong>{{ proceso.get_nombre() }} <br>
-                        <strong>Tamaño:</strong>{{ proceso.get_tamano() }} <br>
-                        <strong>Prioridad:</strong>{{ proceso.is_prioridad() }} <br>
-                        <strong>Recursos:</strong>
-                        {% for recurso in proceso.get_nombre_recursos() %}
-                            {{ recurso }}{% if not loop.last %}, {% endif %}
-                        {% endfor %}
-                        <br>
+                        <p>ID: {{ proceso.get_id_proceso() }}</p>
+                        <p>Nombre: {{ proceso.get_nombre_proceso() }}</p>
+                        <p>Tamaño: {{ proceso.get_tamano_proceso() }}</p>
+                        <p>Prioridad: {{ proceso.is_prioridad_proceso() }}</p>
+                        {% if proceso.get_recursos_asignados != 0 %}
+                        <h3>Recursos asignados</h3>
+                        <ul>
+                            {% for recurso in proceso.get_recursos_asignados() %}
+                            <li>{{ recurso.get_nombre_recurso() }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+
+                        <h3>Recursos necesarios</h3>
+                        <ul>
+                            {% for recurso in proceso.get_recursos_necesarios() %}
+                            <li>{{ recurso.get_nombre_recurso() }}</li>
+                            {% endfor %}
+                        </ul>
                     </li>
                     {% endfor %}
-                </ul>
                 {% else %}
-                <p>No hay procesos en la cola.</p>
+                    <p>No hay procesos en la cola.</p>
                 {% endif %}
-                <form action="/ejecutar_proceso" method="post">
-                    <button type="submit" class="btn btn-success">Ejecutar Proceso</button>
-                </form>
+                    <form action="/ejecutar_proceso" method="post">
+                        <button type="submit" class="btn btn-success">Ejecutar Proceso</button>
+                    </form>
             </div>
             <div class="col-4">
                 <h1>En Ejecución</h1>
-                {% if proceso_ejecucion %}
+                {% if proceso_ejecucion and proceso_ejecucion.tiene_todos_los_recursos() %}
                 <p>ID: {{ proceso_ejecucion.get_id_proceso() }}</p>
-                <p>Nombre: {{ proceso_ejecucion.get_nombre() }}</p>
-                <p>Tamaño: {{ proceso_ejecucion.get_tamano() }}</p>
-                <p>Prioridad: {{ proceso_ejecucion.is_prioridad() }}</p>
-                <p>Recursos: {{ proceso_ejecucion.get_nombre_recursos() }}</p>
+                <p>Nombre: {{ proceso_ejecucion.get_nombre_proceso() }}</p>
+                <p>Tamaño: {{ proceso_ejecucion.get_tamano_proceso() }}</p>
+                <p>Prioridad: {{ proceso_ejecucion.is_prioridad_proceso() }}</p>
+                <h3>Recursos asignados</h3>
+                <ul>
+                    {% for recurso in proceso_ejecucion.get_recursos_asignados() %}
+                    <li>{{ recurso.get_nombre_recurso() }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h3>Recursos necesarios</h3>
+                <ul>
+                    {% for recurso in proceso_ejecucion.get_recursos_necesarios() %}
+                    <li>{{ recurso.get_nombre_recurso() }}</li>
+                    {% endfor %}
+                </ul>
                 {% else %}
                 <p>No hay procesos en ejecución.</p>
                 {% endif %}
