@@ -83,6 +83,14 @@ class Procesos:
         self.__recursos_necesarios = [r for r in self.__recursos_necesarios if r not in recursos_libres]
         return recursos_libres
     
+    def no_pasa_a_bloqueados(self):
+        r_disponible = True
+        recursos_no_disponibles = []
+        for r in self.__recursos_necesarios:
+            if not r.is_disponibilidad_recurso():
+                r_disponible = False
+                recursos_no_disponibles.append(int(r.get_id_recurso()))
+        return r_disponible,recursos_no_disponibles
     # def mostrar_info(self):
     #     recursos_nombres = ', '.join(recurso.get_nombre_recurso() for recurso in self.__recursos)
     #     return (

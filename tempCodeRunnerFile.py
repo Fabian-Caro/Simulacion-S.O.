@@ -1,3 +1,3 @@
-            # if recurso.is_disponibilidad_recurso():
-            #     recursos_asignados.append(recurso)
-            #     recurso.set_disponibilidad_recurso(False)
+            # print("!!!!!!"+str(no_pasa_a_bloqueados))
+            # print()
+            # print()
