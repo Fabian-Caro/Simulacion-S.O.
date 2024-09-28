@@ -2,7 +2,7 @@ from collections import deque
 
 class Bloqueados(object):
     # Declaración de variables estáticas
-
+    # si quieres puedes dejarlo asi : r1 = []
     r1 = deque()
     r2 = deque()
     r3 = deque()
@@ -25,44 +25,45 @@ class Bloqueados(object):
         else:
             Bloqueados.r5.append(proceso)
     
-    @staticmethod
-    def liberar_cola_bloqueados():
+    # es la logica para liberar cola de bloqueado que estaba desarrollando en el proyecto anterior
+#     @staticmethod
+#     def liberar_cola_bloqueados():
         
-        if Recurso.recurso_proceso[0] == None and len(Bloqueados.r1)>0:
-            proceso_por_liberar = Bloqueados.r1.popleft()
-            Listos.listos.append(proceso_por_liberar)
-            proceso_por_liberar.ultimoRecursoIndex+=1
-        elif Recurso.recurso_proceso[1] == None and len(Bloqueados.r2)>0:
-            proceso_por_liberar = Bloqueados.r2.popleft()
-            Listos.listos.append(proceso_por_liberar)
-            proceso_por_liberar.ultimoRecursoIndex+=1
-        elif Recurso.recurso_proceso[2] == None and len(Bloqueados.r3)>0:
-            proceso_por_liberar = Bloqueados.r3.popleft()
-            Listos.listos.append(proceso_por_liberar)
-            proceso_por_liberar.ultimoRecursoIndex+=1
-        elif Recurso.recurso_proceso[3] == None and len(Bloqueados.r4)>0:
-            proceso_por_liberar = Bloqueados.r4.popleft()
-            Listos.listos.append(proceso_por_liberar)
-            proceso_por_liberar.ultimoRecursoIndex+=1
-        elif Recurso.recurso_proceso[4] == None and len(Bloqueados.r5)>0:
-            proceso_por_liberar = Bloqueados.r5.popleft()
-            Listos.listos.append(proceso_por_liberar)
-            proceso_por_liberar.ultimoRecursoIndex+=1
+#         if Recurso.recurso_proceso[0] == None and len(Bloqueados.r1)>0:
+#             proceso_por_liberar = Bloqueados.r1.popleft()
+#             Listos.listos.append(proceso_por_liberar)
+#             proceso_por_liberar.ultimoRecursoIndex+=1
+#         elif Recurso.recurso_proceso[1] == None and len(Bloqueados.r2)>0:
+#             proceso_por_liberar = Bloqueados.r2.popleft()
+#             Listos.listos.append(proceso_por_liberar)
+#             proceso_por_liberar.ultimoRecursoIndex+=1
+#         elif Recurso.recurso_proceso[2] == None and len(Bloqueados.r3)>0:
+#             proceso_por_liberar = Bloqueados.r3.popleft()
+#             Listos.listos.append(proceso_por_liberar)
+#             proceso_por_liberar.ultimoRecursoIndex+=1
+#         elif Recurso.recurso_proceso[3] == None and len(Bloqueados.r4)>0:
+#             proceso_por_liberar = Bloqueados.r4.popleft()
+#             Listos.listos.append(proceso_por_liberar)
+#             proceso_por_liberar.ultimoRecursoIndex+=1
+#         elif Recurso.recurso_proceso[4] == None and len(Bloqueados.r5)>0:
+#             proceso_por_liberar = Bloqueados.r5.popleft()
+#             Listos.listos.append(proceso_por_liberar)
+#             proceso_por_liberar.ultimoRecursoIndex+=1
 
-class Listos(object):
-    # Declaración de variables estáticas
-    listos = deque()
+# class Listos(object):
+#     # Declaración de variables estáticas
+#     listos = deque()
 
-    def __init__(self):
-        pass  # No se necesitan variables de instancia, ya que usamos variables estáticas
+#     def __init__(self):
+#         pass  # No se necesitan variables de instancia, ya que usamos variables estáticas
 
-class Recurso(object):
-    recurso_proceso = [None,None,None,None,None] # Si es None, por ejemplo recurso_proceso[0] = r1 = None esta libre. 
+# class Recurso(object):
+#     recurso_proceso = [None,None,None,None,None] # Si es None, por ejemplo recurso_proceso[0] = r1 = None esta libre. 
 
-    @staticmethod
-    def MostrarRecurso_Proceso():
-        i = 1
-        for elemento in Recurso.recurso_proceso:
-            if elemento != None:
-                print("R"+str(i)+" esta asignado a: "+str(elemento.nombre))
-                i+=1
+#     @staticmethod
+#     def MostrarRecurso_Proceso():
+#         i = 1
+#         for elemento in Recurso.recurso_proceso:
+#             if elemento != None:
+#                 print("R"+str(i)+" esta asignado a: "+str(elemento.nombre))
+#                 i+=1

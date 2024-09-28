@@ -6,8 +6,6 @@ from collections import deque
 app = Flask(__name__)
 
 cola_listos = []
-cola_ejecución = []
-cola_bloqueados= []
 proceso_ejecucion = None
 
 recursos = [

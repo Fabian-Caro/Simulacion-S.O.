@@ -70,7 +70,7 @@ class Procesos:
         # if isinstance(recursos_necesarios, list) and all(isinstance(r, bool) for r in recursos_necesarios):
         #     self.__recursos_necesarios = recursos_necesarios
             
-    def tiene_todos_los_recursos(self): # esta mal 
+    def tiene_todos_los_recursos(self):
         return len(self.__recursos_necesarios) == len(self.__recursos_asignados)
     
     def liberar_recursos(self):
