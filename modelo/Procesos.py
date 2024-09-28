@@ -1,4 +1,4 @@
-from modelo.Recurso import Recurso
+# from modelo.Recurso import Recurso
 import random
 
 class Procesos:
@@ -53,10 +53,11 @@ class Procesos:
         return self.__recursos_asignados
     
     def set_recursos_asignados(self, recursos_asignados):
-        if isinstance(recursos_asignados, list) and all(isinstance(r, bool) for r in recursos_asignados):
-            self.__recursos_asignados = recursos_asignados
-        else:
-            raise ValueError("recursos_asignados debe ser una lista de booleanos")
+        self.__recursos_asignados = recursos_asignados
+        # if isinstance(recursos_asignados, list) and all(isinstance(r, bool) for r in recursos_asignados):
+        #     self.__recursos_asignados = recursos_asignados
+        # else:
+        #     raise ValueError("recursos_asignados debe ser una lista de booleanos")
         
     def get_nombre_recursos(self):
         return [recurso.get_nombre_recurso() for recurso in self.__recursos_asignados]
@@ -64,9 +65,10 @@ class Procesos:
     def get_recursos_necesarios(self):
         return self.__recursos_necesarios
     
-    def set_recursos_asignados(self, recursos_necesarios):
-        if isinstance(recursos_necesarios, list) and all(isinstance(r, bool) for r in recursos_necesarios):
-            self.__recursos_necesarios = recursos_necesarios
+    def set_recursos_necesarios(self, recursos_necesarios):
+        self.__recursos_necesarios = recursos_necesarios
+        # if isinstance(recursos_necesarios, list) and all(isinstance(r, bool) for r in recursos_necesarios):
+        #     self.__recursos_necesarios = recursos_necesarios
             
     def tiene_todos_los_recursos(self): # esta mal 
         return len(self.__recursos_necesarios) == len(self.__recursos_asignados)
@@ -75,10 +77,10 @@ class Procesos:
         recursos_libres = []
         for recurso in self.__recursos_necesarios:
             if random.random() < 0.5:
-                recurso.set_disponibilidad_recurso(True)
+                recurso.set_proceso(None)
                 recursos_libres.append(recurso)
             else:
-                recurso.set_disponibilidad_recurso(False)
+                recurso.set_proceso(self)
         self.__recursos_asignados = [r for r in self.__recursos_necesarios if r not in recursos_libres]
         self.__recursos_necesarios = [r for r in self.__recursos_necesarios if r not in recursos_libres]
         return recursos_libres
@@ -87,10 +89,15 @@ class Procesos:
         r_disponible = True
         recursos_no_disponibles = []
         for r in self.__recursos_necesarios:
-            if not r.is_disponibilidad_recurso():
+            if r.get_proceso() != self and r.get_proceso() != None:
                 r_disponible = False
                 recursos_no_disponibles.append(int(r.get_id_recurso()))
         return r_disponible,recursos_no_disponibles
+    
+    def terminar_ejecucion(self):
+        for recurso in self.__recursos_necesarios:
+            recurso.set_proceso(None)
+
     # def mostrar_info(self):
     #     recursos_nombres = ', '.join(recurso.get_nombre_recurso() for recurso in self.__recursos)
     #     return (
