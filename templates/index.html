@@ -53,14 +53,21 @@
                         <div class="col-sm-10 offset-sm-2">
                             {% for recurso in recursos %}
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="recurso{{ loop.index }}"
+                                <input class="form-check-input" type="checkbox" id="recurso{{ loop.index }}" 
                                     name="recursos" value="{{ recurso.get_id_recurso() }}">
-                                <label class="form-check-label" for="recurso{{ loop.index }}">{{
-                                    recurso.get_nombre_recurso() }}</label>
+                                <label class="form-check-label" for="recurso{{ loop.index }}">
+                                    {{ recurso.get_nombre_recurso() }} 
+                                    {% if recurso.is_disponibilidad_recurso() %}
+                                        <span class="text-success">(Disponible)</span>
+                                    {% else %}
+                                        <span class="text-danger">(No disponible)</span>
+                                    {% endif %}
+                                </label>
                             </div>
                             {% endfor %}
                         </div>
                     </div>
+                    
                     <button type="submit" class="btn btn-primary">Crear</button>
                 </form>
             </div>

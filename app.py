@@ -15,10 +15,10 @@ recursos = [
     Recurso("003", "Impresora", True),
     Recurso("004", "Archivos", True),
     Recurso("005", "Red", True),
-    Recurso("006", "Teclado", True),
-    Recurso("007", "Ratón", True),
-    Recurso("008", "Pantalla", True),
-    Recurso("009", "Parlante", True)
+    # Recurso("006", "Teclado", True),
+    # Recurso("007", "Ratón", True),
+    # Recurso("008", "Pantalla", True),
+    # Recurso("009", "Parlante", True)
 ]
 
 terminados = []
@@ -40,13 +40,15 @@ def crear_proceso():
     recursos_asignados = []
     recursos_necesarios = []
     
+    # for recurso in recurso_seleccionado:
+    #     recursos_necesarios.append(recurso)
     for recurso_id in recurso_seleccionado:
         recurso = next((r for r in recursos if r.get_id_recurso() == recurso_id), None)
         if recurso:
             recursos_necesarios.append(recurso)
-            if recurso.is_disponibilidad_recurso():
-                recursos_asignados.append(recurso)
-                recurso.set_disponibilidad_recurso(False)
+            # if recurso.is_disponibilidad_recurso():
+            #     recursos_asignados.append(recurso)
+            #     recurso.set_disponibilidad_recurso(False)
                 
     ##recursos_asignados = [rec for rec in recursos if rec.get_id_recurso() in request.form.getlist('recursos')]
     
@@ -59,10 +61,11 @@ def crear_proceso():
     if not proceso_ejecucion and cola_listos:
         posible_proceso = cola_listos.pop(0)
         
-        if posible_proceso.tiene_todos_los_recursos():
-            proceso_ejecucion = posible_proceso
-        else:
-            cola_bloqueados.append(posible_proceso)
+        proceso_ejecucion = posible_proceso
+        # if posible_proceso.tiene_todos_los_recursos():
+        #     proceso_ejecucion = posible_proceso
+        # else:
+        #     cola_bloqueados.append(posible_proceso)
         
     return redirect(url_for('index'))
     
@@ -84,13 +87,30 @@ def crear_proceso():
 @staticmethod
 def de_ejecucion_a_listos():
     recursos_liberados = proceso_ejecucion.liberar_recursos()
+    recursos_asginados = proceso_ejecucion.get_recursos_asignados()
+    recursos_necesarios = proceso_ejecucion.get_recursos_necesarios()
     for recurso in recursos_liberados:
         print(f"Recurso { recurso.get_nombre_recurso() } liberado.")
+    for recurso in recursos_asginados:
+        print(f"Recurso { recurso.get_nombre_recurso() } asignado.")
+    for recurso in recursos_necesarios:
+        print(f"Recurso { recurso.get_nombre_recurso() } necesarios.") 
     cola_listos.append(proceso_ejecucion)
 
 @staticmethod
 def de_ejecucion_a_terminados():
     terminados.append(proceso_ejecucion.get_nombre_proceso())
+
+#bloqueados
+@staticmethod
+def ver_si_estan_disponibles_recursos():
+    R =  proceso_ejecucion.get_recursos()
+    flag = True
+    for r in R:
+        if recursos[r].get_disponibilidad_recurso() != proceso_ejecucion and R[r].get_disponibilidad_recurso() != None:
+            flag = False
+            break
+    return flag
 
 @app.route('/ejecutar_proceso', methods=['POST'])
 def ejecutar_proceso():
@@ -99,10 +119,12 @@ def ejecutar_proceso():
     proceso_ejecucion.set_tamano_proceso(int (proceso_ejecucion.get_tamano_proceso())-2)
     if cola_listos:
         if proceso_ejecucion.get_tamano_proceso() > 0:
+
             de_ejecucion_a_listos()
         else:
             de_ejecucion_a_terminados()
-        proceso_ejecucion = cola_listos.pop(0)
+        if cola_listos:
+            proceso_ejecucion = cola_listos.pop(0)
     else:
         if proceso_ejecucion.get_tamano_proceso() == 0:
             de_ejecucion_a_terminados()

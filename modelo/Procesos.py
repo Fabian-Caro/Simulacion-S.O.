@@ -68,34 +68,36 @@ class Procesos:
         if isinstance(recursos_necesarios, list) and all(isinstance(r, bool) for r in recursos_necesarios):
             self.__recursos_necesarios = recursos_necesarios
             
-    def tiene_todos_los_recursos(self):
+    def tiene_todos_los_recursos(self): # esta mal 
         return len(self.__recursos_necesarios) == len(self.__recursos_asignados)
     
     def liberar_recursos(self):
         recursos_libres = []
-        for recurso in self.__recursos_asignados:
+        for recurso in self.__recursos_necesarios:
             if random.random() < 0.5:
                 recurso.set_disponibilidad_recurso(True)
                 recursos_libres.append(recurso)
-                
-        self.__recursos_asignados = [r for r in self.__recursos_asignados if r not in recursos_libres]
+            else:
+                recurso.set_disponibilidad_recurso(False)
+        self.__recursos_asignados = [r for r in self.__recursos_necesarios if r not in recursos_libres]
+        self.__recursos_necesarios = [r for r in self.__recursos_necesarios if r not in recursos_libres]
         return recursos_libres
     
-    def mostrar_info(self):
-        recursos_nombres = ', '.join(recurso.get_nombre_recurso() for recurso in self.__recursos)
-        return (
-            f"ID: {self.__id_proceso}, Nombre: {self.__nombre}, Tamaño: {self.__tamano}, "
-            f"Prioridad: {self.__prioridad}, Recursos: {recursos_nombres}"
-            )
+    # def mostrar_info(self):
+    #     recursos_nombres = ', '.join(recurso.get_nombre_recurso() for recurso in self.__recursos)
+    #     return (
+    #         f"ID: {self.__id_proceso}, Nombre: {self.__nombre}, Tamaño: {self.__tamano}, "
+    #         f"Prioridad: {self.__prioridad}, Recursos: {recursos_nombres}"
+    #         )
     
-    recursos = [
-    Recurso("001", "Disco duro", True),
-    Recurso("002", "Tarjeta gráfica", True),
-    Recurso("003", "Impresora", True),
-    Recurso("004", "Archivos", True),
-    Recurso("005", "Red", True),
-    Recurso("006", "Teclado", True),
-    Recurso("007", "Ratón", True),
-    Recurso("008", "Pantalla", True),
-    Recurso("009", "Parlante", True)
-    ]
+    # recursos = [
+    # Recurso("001", "Disco duro", True),
+    # Recurso("002", "Tarjeta gráfica", True),
+    # Recurso("003", "Impresora", True),
+    # Recurso("004", "Archivos", True),
+    # Recurso("005", "Red", True),
+    # Recurso("006", "Teclado", True),
+    # Recurso("007", "Ratón", True),
+    # Recurso("008", "Pantalla", True),
+    # Recurso("009", "Parlante", True)
+    # ]

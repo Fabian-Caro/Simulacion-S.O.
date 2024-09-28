@@ -1,2 +1,3 @@
-if len(cola_ejecución) == 0:
-    #        cola_ejecución.append(proceso_a_ejecutar)
+            # if recurso.is_disponibilidad_recurso():
+            #     recursos_asignados.append(recurso)
+            #     recurso.set_disponibilidad_recurso(False)

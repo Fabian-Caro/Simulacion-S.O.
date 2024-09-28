@@ -23,21 +23,21 @@ class Recurso:
         return (
             f"ID: {self.__id_recurso}, Nombre: {self.__nombre_recurso}, Prioridad: {self.__disponibilidad_recurso}")
     
-recursos = [
-    Recurso("001", "Disco duro", True),
-    Recurso("002", "Tarjeta gráfica", True),
-    Recurso("003", "Impresora", True),
-    Recurso("004", "Archivos", True),
-    Recurso("005", "Red", True),
-    Recurso("006", "Teclado", True),
-    Recurso("007", "Ratón", True),
-    Recurso("008", "Pantalla", True),
-    Recurso("009", "Parlante", True)
-]
+# recursos = [
+#     Recurso("001", "Disco duro", True),
+#     Recurso("002", "Tarjeta gráfica", True),
+#     Recurso("003", "Impresora", True),
+#     Recurso("004", "Archivos", True),
+#     Recurso("005", "Red", True),
+#     Recurso("006", "Teclado", True),
+#     Recurso("007", "Ratón", True),
+#     Recurso("008", "Pantalla", True),
+#     Recurso("009", "Parlante", True)
+# ]
 
-def imprimir_recursos(recursos):
-    for recurso in recursos:
-        print(recurso.mostrar_info())
+# def imprimir_recursos(recursos):
+#     for recurso in recursos:
+#         print(recurso.mostrar_info())
 
 
-imprimir_recursos(recursos)
+# imprimir_recursos(recursos)
