@@ -1,4 +1,4 @@
-from modelo.Recurso import Recurso
+# from modelo.Recurso import Recurso
 import random
 
 class Procesos:
@@ -53,10 +53,11 @@ class Procesos:
         return self.__recursos_asignados
     
     def set_recursos_asignados(self, recursos_asignados):
-        if isinstance(recursos_asignados, list) and all(isinstance(r, bool) for r in recursos_asignados):
-            self.__recursos_asignados = recursos_asignados
-        else:
-            raise ValueError("recursos_asignados debe ser una lista de booleanos")
+        self.__recursos_asignados = recursos_asignados
+        # if isinstance(recursos_asignados, list) and all(isinstance(r, bool) for r in recursos_asignados):
+        #     self.__recursos_asignados = recursos_asignados
+        # else:
+        #     raise ValueError("recursos_asignados debe ser una lista de booleanos")
         
     def get_nombre_recursos(self):
         return [recurso.get_nombre_recurso() for recurso in self.__recursos_asignados]
@@ -64,38 +65,54 @@ class Procesos:
     def get_recursos_necesarios(self):
         return self.__recursos_necesarios
     
-    def set_recursos_asignados(self, recursos_necesarios):
-        if isinstance(recursos_necesarios, list) and all(isinstance(r, bool) for r in recursos_necesarios):
-            self.__recursos_necesarios = recursos_necesarios
+    def set_recursos_necesarios(self, recursos_necesarios):
+        self.__recursos_necesarios = recursos_necesarios
+        # if isinstance(recursos_necesarios, list) and all(isinstance(r, bool) for r in recursos_necesarios):
+        #     self.__recursos_necesarios = recursos_necesarios
             
     def tiene_todos_los_recursos(self):
         return len(self.__recursos_necesarios) == len(self.__recursos_asignados)
     
     def liberar_recursos(self):
         recursos_libres = []
-        for recurso in self.__recursos_asignados:
+        for recurso in self.__recursos_necesarios:
             if random.random() < 0.5:
-                recurso.set_disponibilidad_recurso(True)
+                recurso.set_proceso(None)
                 recursos_libres.append(recurso)
-                
-        self.__recursos_asignados = [r for r in self.__recursos_asignados if r not in recursos_libres]
+            else:
+                recurso.set_proceso(self)
+        self.__recursos_asignados = [r for r in self.__recursos_necesarios if r not in recursos_libres]
+        self.__recursos_necesarios = [r for r in self.__recursos_necesarios if r not in recursos_libres]
         return recursos_libres
     
-    def mostrar_info(self):
-        recursos_nombres = ', '.join(recurso.get_nombre_recurso() for recurso in self.__recursos)
-        return (
-            f"ID: {self.__id_proceso}, Nombre: {self.__nombre}, Tamaño: {self.__tamano}, "
-            f"Prioridad: {self.__prioridad}, Recursos: {recursos_nombres}"
-            )
+    def no_pasa_a_bloqueados(self):
+        r_disponible = True
+        recursos_no_disponibles = []
+        for r in self.__recursos_necesarios:
+            if r.get_proceso() != self and r.get_proceso() != None:
+                r_disponible = False
+                recursos_no_disponibles.append(int(r.get_id_recurso()))
+        return r_disponible,recursos_no_disponibles
     
-    recursos = [
-    Recurso("001", "Disco duro", True),
-    Recurso("002", "Tarjeta gráfica", True),
-    Recurso("003", "Impresora", True),
-    Recurso("004", "Archivos", True),
-    Recurso("005", "Red", True),
-    Recurso("006", "Teclado", True),
-    Recurso("007", "Ratón", True),
-    Recurso("008", "Pantalla", True),
-    Recurso("009", "Parlante", True)
-    ]
+    def terminar_ejecucion(self):
+        for recurso in self.__recursos_necesarios:
+            recurso.set_proceso(None)
+
+    # def mostrar_info(self):
+    #     recursos_nombres = ', '.join(recurso.get_nombre_recurso() for recurso in self.__recursos)
+    #     return (
+    #         f"ID: {self.__id_proceso}, Nombre: {self.__nombre}, Tamaño: {self.__tamano}, "
+    #         f"Prioridad: {self.__prioridad}, Recursos: {recursos_nombres}"
+    #         )
+    
+    # recursos = [
+    # Recurso("001", "Disco duro", True),
+    # Recurso("002", "Tarjeta gráfica", True),
+    # Recurso("003", "Impresora", True),
+    # Recurso("004", "Archivos", True),
+    # Recurso("005", "Red", True),
+    # Recurso("006", "Teclado", True),
+    # Recurso("007", "Ratón", True),
+    # Recurso("008", "Pantalla", True),
+    # Recurso("009", "Parlante", True)
+    # ]

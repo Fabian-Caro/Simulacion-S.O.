@@ -1,2 +1,3 @@
-if len(cola_ejecución) == 0:
-    #        cola_ejecución.append(proceso_a_ejecutar)
+            # print("!!!!!!"+str(no_pasa_a_bloqueados))
+            # print()
+            # print()
