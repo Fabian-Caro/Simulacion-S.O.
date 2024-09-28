@@ -100,7 +100,7 @@
             </div>
             <div class="col-4">
                 <h1>En Ejecución</h1>
-                {% if proceso_ejecucion and proceso_ejecucion.tiene_todos_los_recursos() %}
+                {% if proceso_ejecucion %}
                 <p>ID: {{ proceso_ejecucion.get_id_proceso() }}</p>
                 <p>Nombre: {{ proceso_ejecucion.get_nombre_proceso() }}</p>
                 <p>Tamaño: {{ proceso_ejecucion.get_tamano_proceso() }}</p>
