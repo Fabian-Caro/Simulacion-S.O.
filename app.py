@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 cola_listos = []
 cola_ejecución = []
+cola_bloqueados= []
 proceso_ejecucion = None
 
 recursos = [
@@ -34,16 +35,34 @@ def crear_proceso():
     nombre = request.form.get('nombre')
     tamano = request.form.get('tamano')
     prioridad = request.form.get('prioridad')
-    recursos_asignados = [rec for rec in recursos if rec.get_id_recurso() in request.form.getlist('recursos')]
+    recurso_seleccionado =  request.form.getlist('recursos')
+    
+    recursos_asignados = []
+    recursos_necesarios = []
+    
+    for recurso_id in recurso_seleccionado:
+        recurso = next((r for r in recursos if r.get_id_recurso() == recurso_id), None)
+        if recurso:
+            recursos_necesarios.append(recurso)
+            if recurso.is_disponibilidad_recurso():
+                recursos_asignados.append(recurso)
+                recurso.set_disponibilidad_recurso(False)
+                
+    ##recursos_asignados = [rec for rec in recursos if rec.get_id_recurso() in request.form.getlist('recursos')]
     
     # Imprimir los datos en la consola para verificar
-    print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, Prioridad: {prioridad}, Recursos: {recursos_asignados}")
-    nuevo_proceso = Procesos(id_proceso, nombre, tamano, prioridad, recursos_asignados)
+    print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, Prioridad: {prioridad}, Recursos: {recursos}")
+    nuevo_proceso = Procesos(id_proceso, nombre, tamano, prioridad, recursos_asignados, recursos_necesarios)
     
     cola_listos.append(nuevo_proceso)
     
     if not proceso_ejecucion and cola_listos:
-        proceso_ejecucion = cola_listos.pop(0)
+        posible_proceso = cola_listos.pop(0)
+        
+        if posible_proceso.tiene_todos_los_recursos():
+            proceso_ejecucion = posible_proceso
+        else:
+            cola_bloqueados.append(posible_proceso)
         
     return redirect(url_for('index'))
     
@@ -64,24 +83,28 @@ def crear_proceso():
 
 @staticmethod
 def de_ejecucion_a_listos():
+    recursos_liberados = proceso_ejecucion.liberar_recursos()
+    for recurso in recursos_liberados:
+        print(f"Recurso { recurso.get_nombre_recurso() } liberado.")
     cola_listos.append(proceso_ejecucion)
 
 @staticmethod
 def de_ejecucion_a_terminados():
-    terminados.append(proceso_ejecucion.get_nombre())
+    terminados.append(proceso_ejecucion.get_nombre_proceso())
 
 @app.route('/ejecutar_proceso', methods=['POST'])
 def ejecutar_proceso():
     global proceso_ejecucion
-    proceso_ejecucion.set_tamano(int (proceso_ejecucion.get_tamano())-2)
+    
+    proceso_ejecucion.set_tamano_proceso(int (proceso_ejecucion.get_tamano_proceso())-2)
     if cola_listos:
-        if proceso_ejecucion.get_tamano() > 0:
+        if proceso_ejecucion.get_tamano_proceso() > 0:
             de_ejecucion_a_listos()
         else:
             de_ejecucion_a_terminados()
         proceso_ejecucion = cola_listos.pop(0)
     else:
-        if proceso_ejecucion.get_tamano() == 0:
+        if proceso_ejecucion.get_tamano_proceso() == 0:
             de_ejecucion_a_terminados()
             proceso_ejecucion = None
     # if len(terminados>0):
