@@ -18,7 +18,7 @@ def liberar_o_no_recurso(proceso_ejecucion):
     new_recusros = []
 
     for r in recursos:
-        se_libera = False #random.randint(True,False)
+        se_libera = True #random.randint(True,False)
         print(str(se_libera)+" "+str(r))
         if not se_libera:
             new_recusros.append(r)
@@ -26,14 +26,14 @@ def liberar_o_no_recurso(proceso_ejecucion):
             R[r].set_disponibilidad_recurso(None)
     return new_recusros
 
-p1 = Procesos(1,'p1',1,None,[0,1,2])
-p2 = Procesos(1,'p2',1,None,[5,4,6])
+p1 = Procesos(1,'p1',10,None,[0])
+p2 = Procesos(2,'p2',10,None,[0])
 
 R = [
     Recurso("001", "Disco duro", p1),
-    Recurso("002", "Tarjeta gráfica", p2),
-    Recurso("003", "Impresora", p1),
-    Recurso("004", "Archivos", p2),
+    Recurso("002", "Tarjeta gráfica", None),
+    Recurso("003", "Impresora", None),
+    Recurso("004", "Archivos", None),
     Recurso("005", "Red", None),
     Recurso("006", "Teclado", None),
     Recurso("007", "Raton", None),
