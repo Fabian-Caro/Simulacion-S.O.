@@ -50,26 +50,27 @@
                         </div>
                     </fieldset>
                     -->
-                        <div class="row mb-3 p-2">
-                            <legend class="col-form-label col-sm-2 pt-0">Recursos</legend>
-                            <div class="col-sm-10 offset-sm-2">
-                                {% for recurso in recursos %}
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="recurso{{ loop.index }}" 
-                                        name="recursos" value="{{ recurso.get_id_recurso() }}">
-                                    <label class="form-check-label" for="recurso{{ loop.index }}">
-                                        {{ recurso.get_nombre_recurso() }}
-                                        {% if recurso.get_proceso() %}
-                                            <span class="text-danger">(En uso: {{ recurso.get_proceso().get_nombre_proceso() }})</span>
-                                        {% else %}
-                                            <span class="text-success">(Disponible)</span>
-                                        {% endif %}
-                                    </label>
-                                </div>
-                                {% endfor %}
+                    <div class="row mb-3 p-2">
+                        <legend class="col-form-label col-sm-2 pt-0">Recursos</legend>
+                        <div class="col-sm-10 offset-sm-2">
+                            {% for recurso in recursos %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="recurso{{ loop.index }}"
+                                    name="recursos" value="{{ recurso.get_id_recurso() }}">
+                                <label class="form-check-label" for="recurso{{ loop.index }}">
+                                    {{ recurso.get_nombre_recurso() }}
+                                    {% if recurso.get_proceso() %}
+                                    <span class="text-danger">(En uso: {{ recurso.get_proceso().get_nombre_proceso()
+                                        }})</span>
+                                    {% else %}
+                                    <span class="text-success">(Disponible)</span>
+                                    {% endif %}
+                                </label>
                             </div>
+                            {% endfor %}
                         </div>
-                    
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Crear</button>
                 </form>
             </div>
@@ -99,9 +100,9 @@
                         </ul>
                     </li>
                     {% endfor %}
-                {% else %}
+                    {% else %}
                     <p>No hay procesos en la cola.</p>
-                {% endif %}
+                    {% endif %}
                     <form action="/ejecutar_proceso" method="post">
                         <button type="submit" class="btn btn-success">Ejecutar Proceso</button>
                     </form>
@@ -131,16 +132,41 @@
             </div>
         </div>
         <div class="row">
-
-
-            <div class="col">
+            <div class="col-6">
                 <h1>Terminado</h1>
+                {% if terminados %}
+                <ul>
+                    {% for proceso in terminados %}
+                    <li>Nombre: {{ proceso.get_nombre_proceso() }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No hay procesos terminados.</p>
+                {% endif %}
             </div>
         </div>
         <div class="row">
             <div class="col">
-                {% if proceso_bloqueado %}
-                <h1>Bloqueado</h1>
+                <h2>Procesos Bloqueados</h2>
+
+                {% if bloqueados.DiscoDuro %}
+                <p>Cola de bloqueados Disco Duro: {{ bloqueados.DiscoDuro }}</p>
+                {% endif %}
+
+                {% if bloqueados.TarjetaGrafica %}
+                <p>Cola de bloqueados Tarjeta Gráfica: {{ bloqueados.TarjetaGrafica }}</p>
+                {% endif %}
+
+                {% if bloqueados.Impresora %}
+                <p>Cola de bloqueados Impresora: {{ bloqueados.Impresora }}</p>
+                {% endif %}
+
+                {% if bloqueados.Archivos %}
+                <p>Cola de bloqueados Archivos: {{ bloqueados.Archivos }}</p>
+                {% endif %}
+
+                {% if bloqueados.Red %}
+                <p>Cola de bloqueados Red: {{ bloqueados.Red }}</p>
                 {% endif %}
             </div>
         </div>

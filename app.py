@@ -23,7 +23,22 @@ recursos_libres = []
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html', procesos_listos=cola_listos, proceso_ejecucion=proceso_ejecucion, proceso_bloqueado=proceso_bloqueado, recursos=recursos, terminados=terminados)
+    bloqueados = {
+        'DiscoDuro': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso1],
+        'TarjetaGrafica': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso2],
+        'Impresora': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso3],
+        'Archivos': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso4],
+        'Red': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso5]
+    }
+
+    return render_template(
+        'index.html', 
+        procesos_listos=cola_listos, 
+        proceso_ejecucion=proceso_ejecucion, 
+        proceso_bloqueado=proceso_bloqueado, 
+        recursos=recursos, 
+        terminados=terminados,
+        bloqueados=bloqueados)
 
 @app.route('/crear_proceso', methods=['POST'])
 def crear_proceso():
