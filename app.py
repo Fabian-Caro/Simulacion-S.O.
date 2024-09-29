@@ -40,6 +40,25 @@ def index():
         terminados=terminados,
         bloqueados=bloqueados)
 
+@app.route('/modelo', methods=['GET'])
+def modelo():
+    bloqueados = {
+        'DiscoDuro': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso1],
+        'TarjetaGrafica': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso2],
+        'Impresora': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso3],
+        'Archivos': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso4],
+        'Red': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso5]
+    }
+
+    return render_template(
+        'modelo.html', 
+        procesos_listos=cola_listos, 
+        proceso_ejecucion=proceso_ejecucion, 
+        proceso_bloqueado=proceso_bloqueado, 
+        recursos=recursos, 
+        terminados=terminados,
+        bloqueados=bloqueados)
+
 @app.route('/crear_proceso', methods=['POST'])
 def crear_proceso():
     global proceso_ejecucion
@@ -62,7 +81,7 @@ def crear_proceso():
     
     cola_listos.append(nuevo_proceso)
         
-    return redirect(url_for('index'))
+    return redirect(url_for('modelo'))
     
 @staticmethod
 def de_ejecucion_a_listos():
@@ -126,7 +145,7 @@ def ejecutar_proceso():
             print(f"No hay procesos en ejecución.")
     
     verificar_bloqueados()        
-    return redirect(url_for('index'))
+    return redirect(url_for('modelo'))
 
 def verificar_bloqueados():
     global proceso_bloqueado
