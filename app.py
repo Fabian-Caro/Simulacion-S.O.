@@ -55,11 +55,11 @@ def de_ejecucion_a_listos():
     recursos_asginados = proceso_ejecucion.get_recursos_asignados()
     recursos_necesarios = proceso_ejecucion.get_recursos_necesarios()
     for recurso in recursos_liberados:
-        print(f"Recurso { recurso.get_nombre_recurso() } liberado de { proceso_ejecucion.get_nombre_proceso() }.")
+        print(f"Recurso { recurso.get_nombre_recurso() } liberado.")
     for recurso in recursos_asginados:
-        print(f"Recurso { recurso.get_nombre_recurso() } asignado a { proceso_ejecucion.get_nombre_proceso() }.")
+        print(f"Recurso { recurso.get_nombre_recurso() } asignado.")
     for recurso in recursos_necesarios:
-        print(f"Recurso { recurso.get_nombre_recurso() } necesarios de { proceso_ejecucion.get_nombre_proceso() }.") 
+        print(f"Recurso { recurso.get_nombre_recurso() } necesarios.") 
     cola_listos.append(proceso_ejecucion)
 
 @staticmethod
@@ -115,99 +115,65 @@ def ejecutar_proceso():
 
 def verificar_bloqueados():
     global proceso_bloqueado
-
-    for recurso in recursos:
-        if recurso.get_proceso() is None:
-            # Inicializa un indicador para saber si se asignaron recursos
-            if Bloqueados.recurso1:
-                if recurso.get_id_recurso() == "001":
-                    print(f"Recurso 1: Por aquí es, {Bloqueados.recurso1}")
-                    proceso_bloqueado = Bloqueados.recurso1.popleft()
-                    for recurso in proceso_bloqueado.get_recursos_necesarios():
-                        print(f"Recursos necesarios de { proceso_bloqueado.get_nombre_proceso() }: {recurso.get_nombre_recurso() }")
-                    print(f"Proceso bloqueado de recurso 1 {proceso_bloqueado.get_nombre_proceso()}")
-                    recurso.set_proceso(proceso_bloqueado)
-                    proceso_bloqueado.agregar_recurso_asignado(recurso)
-                    print(f"Recurso 1 asignado a {proceso_bloqueado.get_nombre_proceso()}.")
-                    for recurso in proceso_bloqueado.get_recursos_asignados():
-                        print(f"Recursos asignados de { proceso_bloqueado.get_nombre_proceso() }: {recurso.get_nombre_recurso()}")
-                    if set(proceso_bloqueado.get_recursos_necesarios()).issubset(set(proceso_bloqueado.get_recursos_asignados())):
-                        cola_listos.append(proceso_bloqueado)
-                        print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} añadido a la cola de listos.")
-                    else:
-                        print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} no tiene todos los recursos necesarios.")
-
-            if Bloqueados.recurso2:
-                print(f"Recurso 2: Por aquí es, {Bloqueados.recurso2}")
+    
+    for recurso_actual in recursos:
+        if recurso_actual.get_proceso() is None:
+            if recurso_actual.get_id_recurso() == "001" and Bloqueados.recurso1:
+                print(f"Recurso 1: Por aquí es, { Bloqueados.recurso1 }")
+                proceso_bloqueado = Bloqueados.recurso1.popleft()
+                asignar_recurso(proceso_bloqueado, recurso_actual)
+                verificar_si_esta_bloqueado(proceso_bloqueado)
+            elif recurso_actual.get_id_recurso() == "002" and Bloqueados.recurso2:
+                print(f"Recurso 2: Por aquí es, { Bloqueados.recurso2 }")
                 proceso_bloqueado = Bloqueados.recurso2.popleft()
-                for recurso in proceso_bloqueado.get_recursos_necesarios():
-                    print(f"Recursos necesarios de { proceso_bloqueado.get_nombre_proceso() }: {recurso.get_nombre_recurso() }")
-                print(f"Proceso bloqueado de recurso 2 {proceso_bloqueado.get_nombre_proceso()}")
-                recurso.set_proceso(proceso_bloqueado)
-                proceso_bloqueado.agregar_recurso_asignado(recurso)
-                print(f"Recurso 2 asignado a {proceso_bloqueado.get_nombre_proceso()}.")
-                for recurso in proceso_bloqueado.get_recursos_asignados():
-                    print(f"Recursos asignados de { proceso_bloqueado.get_nombre_proceso() }: {recurso.get_nombre_recurso()}")
-                if set(proceso_bloqueado.get_recursos_necesarios()).issubset(set(proceso_bloqueado.get_recursos_asignados())):
-                    cola_listos.append(proceso_bloqueado)
-                    print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} añadido a la cola de listos.")
-                else:
-                    print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} no tiene todos los recursos necesarios.")
-
-            if Bloqueados.recurso3:
-                if recurso.get_id_recurso() == "003":
-                    print(f"Recurso 3: Por aquí es, {Bloqueados.recurso1}")
-                    proceso_bloqueado = Bloqueados.recurso3.popleft()
-                    for recurso in proceso_bloqueado.get_recursos_necesarios():
-                        print(f"Recursos necesarios de { proceso_bloqueado.get_nombre_proceso() }: {recurso.get_nombre_recurso() }")
-                    print(f"Proceso bloqueado de recurso 3 {proceso_bloqueado.get_nombre_proceso()}")
-                    recurso.set_proceso(proceso_bloqueado)
-                    proceso_bloqueado.agregar_recurso_asignado(recurso)
-                    print(f"Recurso 3 asignado a {proceso_bloqueado.get_nombre_proceso()}.")
-                    for recurso in proceso_bloqueado.get_recursos_asignados():
-                        print(f"Recursos asignados de { proceso_bloqueado.get_nombre_proceso() }: {recurso.get_nombre_recurso()}")
-                    if set(proceso_bloqueado.get_recursos_necesarios()).issubset(set(proceso_bloqueado.get_recursos_asignados())):
-                        cola_listos.append(proceso_bloqueado)
-                        print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} añadido a la cola de listos.")
-                    else:
-                        print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} no tiene todos los recursos necesarios.")
-            if Bloqueados.recurso4:
-                if recurso.get_id_recurso() == "004":
-                    print(f"Recurso 4: Por aquí es, {Bloqueados.recurso1}")
-                    proceso_bloqueado = Bloqueados.recurso4.popleft()
-                    for recurso in proceso_bloqueado.get_recursos_necesarios():
-                        print(f"Recursos necesarios de { proceso_bloqueado.get_nombre_proceso() }: {recurso.get_nombre_recurso() }")
-                    print(f"Proceso bloqueado de recurso 4 {proceso_bloqueado.get_nombre_proceso()}")
-                    recurso.set_proceso(proceso_bloqueado)
-                    proceso_bloqueado.agregar_recurso_asignado(recurso)
-                    print(f"Recurso 4 asignado a {proceso_bloqueado.get_nombre_proceso()}.")
-                    for recurso in proceso_bloqueado.get_recursos_asignados():
-                        print(f"Recursos asignados de { proceso_bloqueado.get_nombre_proceso() }: {recurso.get_nombre_recurso()}")
-                    if set(proceso_bloqueado.get_recursos_necesarios()).issubset(set(proceso_bloqueado.get_recursos_asignados())):
-                        cola_listos.append(proceso_bloqueado)
-                        print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} añadido a la cola de listos.")
-                    else:
-                        print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} no tiene todos los recursos necesarios.")             
-            if Bloqueados.recurso5:
-                if recurso.get_id_recurso() == "005":
-                    print(f"Recurso 5: Por aquí es, {Bloqueados.recurso1}")
-                    proceso_bloqueado = Bloqueados.recurso1.popleft()
-                    for recurso in proceso_bloqueado.get_recursos_necesarios():
-                        print(f"Recursos necesarios de { proceso_bloqueado.get_nombre_proceso() }: {recurso.get_nombre_recurso() }")
-                    print(f"Proceso bloqueado de recurso 5 {proceso_bloqueado.get_nombre_proceso()}")
-                    recurso.set_proceso(proceso_bloqueado)
-                    proceso_bloqueado.agregar_recurso_asignado(recurso)
-                    print(f"Recurso 5 asignado a {proceso_bloqueado.get_nombre_proceso()}.")
-                    for recurso in proceso_bloqueado.get_recursos_asignados():
-                        print(f"Recursos asignados de { proceso_bloqueado.get_nombre_proceso() }: {recurso.get_nombre_recurso()}")
-                    if set(proceso_bloqueado.get_recursos_necesarios()).issubset(set(proceso_bloqueado.get_recursos_asignados())):
-                        cola_listos.append(proceso_bloqueado)
-                        print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} añadido a la cola de listos.")
-                    else:
-                        print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} no tiene todos los recursos necesarios.")
+                asignar_recurso(proceso_bloqueado, recurso_actual)
+                verificar_si_esta_bloqueado(proceso_bloqueado)
+            elif recurso_actual.get_id_recurso() == "003" and Bloqueados.recurso3:
+                print(f"Recurso 3: Por aquí es, { Bloqueados.recurso3 }")
+                proceso_bloqueado = Bloqueados.recurso3.popleft()
+                asignar_recurso(proceso_bloqueado, recurso_actual)
+                verificar_si_esta_bloqueado(proceso_bloqueado)
+            elif recurso_actual.get_id_recurso() == "004" and Bloqueados.recurso4:
+                print(f"Recurso 4: Por aquí es, { Bloqueados.recurso4 }")
+                proceso_bloqueado = Bloqueados.recurso4.popleft()
+                asignar_recurso(proceso_bloqueado, recurso_actual)
+                verificar_si_esta_bloqueado(proceso_bloqueado)
+            elif recurso_actual.get_id_recurso() == "005" and Bloqueados.recurso5:
+                print(f"Recurso 5: Por aquí es, { Bloqueados.recurso5 }")
+                proceso_bloqueado = Bloqueados.recurso5.popleft()
+                asignar_recurso(proceso_bloqueado, recurso_actual)
+                verificar_si_esta_bloqueado(proceso_bloqueado)
+            else:
+                print(f"Recurso '{recurso_actual.get_nombre_recurso()}' ocupado")
+    
     ## proceso_bloqueado.tiene_todos_los_recursos_listos()
     ## Bloqueados.sacar_de_bloqueado1(Bloqueados.recurso1[0])
     ## cola_listos.append(Bloqueados.recurso1[0])
+    
+def asignar_recurso(proceso_bloqueado, recurso_actual):
+    for recurso_necesitado in proceso_bloqueado.get_recursos_necesarios():
+        print(f"Recursos necesarios de {proceso_bloqueado.get_nombre_proceso()}: {recurso_necesitado.get_nombre_recurso()}")
+    
+    recurso_actual.set_proceso(proceso_bloqueado)
+    proceso_bloqueado.agregar_recurso_asignado(recurso_actual)
+
+    for recurso_asignado in proceso_bloqueado.get_recursos_asignados():
+        print(f"Recursos asignados de {proceso_bloqueado.get_nombre_proceso()}: {recurso_asignado.get_nombre_recurso()}")
+    
+    if not verificar_si_esta_bloqueado(proceso_bloqueado):
+        print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} tiene todos los recursos necesarios, moviéndolo a cola de listos.")
+        cola_listos.append(proceso_bloqueado)
+    else:
+        print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} aún necesita más recursos.")
+
+        
+def verificar_si_esta_bloqueado(proceso):
+    # Verifica si el proceso está en alguna de las colas de bloqueados
+    for recurso_bloqueado in [Bloqueados.recurso1, Bloqueados.recurso2, Bloqueados.recurso3, Bloqueados.recurso4, Bloqueados.recurso5]:
+        if proceso in recurso_bloqueado:
+            return True
+    return False
+
     
 '''
 def verificar_bloqueados():
