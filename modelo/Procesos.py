@@ -2,11 +2,10 @@
 import random
 
 class Procesos:
-    def __init__(self, id_proceso, nombre_proceso, tamano_proceso, prioridad_proceso, recursos_asignados, recursos_necesarios):
+    def __init__(self, id_proceso, nombre_proceso, tamano_proceso, recursos_asignados, recursos_necesarios):
         self.__id_proceso = id_proceso
         self.__nombre_proceso = nombre_proceso
         self.__tamano_proceso = tamano_proceso
-        self.__prioridad_proceso = prioridad_proceso
         self.__recursos_asignados = recursos_asignados
         self.__recursos_necesarios = recursos_necesarios
         
@@ -39,18 +38,14 @@ class Procesos:
                 self.__tamano_proceso = 0
         else:
             raise ValueError("Tamaño_proceso debe ser un número.")
-    
-    def is_prioridad_proceso(self):
-        return self.__prioridad_proceso
-    
-    def set_prioridad_proceso(self, prioridad_proceso):
-        if isinstance(prioridad_proceso, bool):
-            self.__prioridad_proceso = prioridad_proceso
-        else:
-            raise ValueError("Prioridad_proceso debe ser un valor booleano.")
         
+    def agregar_recurso_asignado(self, recurso):
+        return self.__recursos_asignados.append(recurso)
+    
     def get_recursos_asignados(self):
-        return self.__recursos_asignados
+        # Devuelve una lista, asegúrate de que nunca devuelva None
+        return self.__recursos_asignados if self.__recursos_asignados is not None else []
+
     
     def set_recursos_asignados(self, recursos_asignados):
         self.__recursos_asignados = recursos_asignados
@@ -63,7 +58,9 @@ class Procesos:
         return [recurso.get_nombre_recurso() for recurso in self.__recursos_asignados]
     
     def get_recursos_necesarios(self):
-        return self.__recursos_necesarios
+        # Devuelve una lista, asegúrate de que nunca devuelva None
+        return self.__recursos_necesarios if self.__recursos_necesarios is not None else []
+
     
     def set_recursos_necesarios(self, recursos_necesarios):
         self.__recursos_necesarios = recursos_necesarios
@@ -86,13 +83,13 @@ class Procesos:
         return recursos_libres
     
     def no_pasa_a_bloqueados(self):
-        r_disponible = True
+        recurso_disponible = True
         recursos_no_disponibles = []
-        for r in self.__recursos_necesarios:
-            if r.get_proceso() != self and r.get_proceso() != None:
-                r_disponible = False
-                recursos_no_disponibles.append(int(r.get_id_recurso()))
-        return r_disponible,recursos_no_disponibles
+        for recurso in self.__recursos_necesarios:
+            if recurso.get_proceso() != self and recurso.get_proceso() != None:
+                recurso_disponible = False
+                recursos_no_disponibles.append(int(recurso.get_id_recurso()))
+        return recurso_disponible,recursos_no_disponibles
     
     def terminar_ejecucion(self):
         for recurso in self.__recursos_necesarios:
