@@ -176,7 +176,7 @@ def verificar_bloqueados():
                 asignar_recurso(proceso_bloqueado, recurso_actual)
                 verificar_si_esta_bloqueado(proceso_bloqueado)
             else:
-                print(f"Recurso '{recurso_actual.get_nombre_recurso()}' ocupado")
+                print(f"Recurso '{recurso_actual.get_nombre_recurso()}' libre")
     
     ## proceso_bloqueado.tiene_todos_los_recursos_listos()
     ## Bloqueados.sacar_de_bloqueado1(Bloqueados.recurso1[0])
