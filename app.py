@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, jsonify
 from modelo.Procesos import Procesos
 from modelo.Recurso import Recurso
 from modelo.Colas import Bloqueados
@@ -76,7 +76,9 @@ def crear_proceso():
         if recurso:
             recursos_necesarios.append(recurso)
 
-    print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, Recursos: {recurso}")
+    print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, ")
+    for recurso in recursos:
+        print(f"Recursos: {recurso}")
     nuevo_proceso = Procesos(id_proceso, nombre, tamano, recursos_asignados, recursos_necesarios)
     
     cola_listos.append(nuevo_proceso)
@@ -97,52 +99,48 @@ def de_ejecucion_a_listos():
     cola_listos.append(proceso_ejecucion)
 
 @staticmethod
+def enviar_a_listo_o_bloqueado_o_terminado():
+    global proceso_ejecucion
+
+    if proceso_ejecucion.get_tamano_proceso() > 0:
+        no_pasa_a_bloqueados,id_recursos = proceso_ejecucion.no_pasa_a_bloqueados()
+
+        if no_pasa_a_bloqueados:
+            de_ejecucion_a_listos()
+        else:
+            for idR in id_recursos:
+                Bloqueados.enviar_a_cola_bloqueados(idR,proceso_ejecucion)
+    else:
+        de_ejecucion_a_terminados()
+
+@staticmethod
 def de_ejecucion_a_terminados():
     terminados.append(proceso_ejecucion)
+    proceso_ejecucion.terminar_ejecucion()
 
+@staticmethod
+def de_listos_a_ejecucion():
+    global proceso_ejecucion
+    if cola_listos:
+        proceso_ejecucion = cola_listos.pop(0)
+        proceso_ejecucion.set_tamano_proceso(int (proceso_ejecucion.get_tamano_proceso())-2)
+        
 @app.route('/ejecutar_proceso', methods=['POST'])
 def ejecutar_proceso():
     global proceso_ejecucion
-
-    if cola_listos:
-        proceso_ejecucion = cola_listos.pop(0)
-        
-        if proceso_ejecucion:
-            proceso_ejecucion.set_tamano_proceso(int (proceso_ejecucion.get_tamano_proceso())-2)
-            
-            if cola_listos:
-                
-                if proceso_ejecucion.get_tamano_proceso() > 0:
-                    no_pasa_a_bloqueados,id_recursos = proceso_ejecucion.no_pasa_a_bloqueados()
-                    
-                    if no_pasa_a_bloqueados:
-                        de_ejecucion_a_listos()
-                    else:
-                        for idR in id_recursos:
-                            Bloqueados.enviar_a_cola_bloqueados(idR,proceso_ejecucion)
-                else:
-                    de_ejecucion_a_terminados()
-            else:
-                if proceso_ejecucion.get_tamano_proceso() > 0:
-                    de_ejecucion_a_listos()
-                else:
-                    de_ejecucion_a_terminados()
-                    proceso_ejecucion.terminar_ejecucion()
-                    proceso_ejecucion = None
-                    
-        
-        resultado = ', '.join(map(str, terminados))
-        print("Cola de bloqueados Disco duro: " + str(list(Bloqueados.recurso1)))
-        print("Cola de bloqueados Tarjeta gráfica: " + str(list(Bloqueados.recurso2)))
-        print("Cola de bloqueados Impresora: " + str(list(Bloqueados.recurso3)))
-        print("Cola de bloqueados Archivos: " + str(list(Bloqueados.recurso4)))
-        print("Cola de bloqueados Red: " + str(list(Bloqueados.recurso5)))
-        print("procesos terminados: "+str(resultado))
+    if not proceso_ejecucion:
+        de_listos_a_ejecucion()
     else:
-        if proceso_ejecucion:
-            proceso_ejecucion.set_tamano_proceso(int (proceso_ejecucion.get_tamano_proceso())-2)
-        else:
-            print(f"No hay procesos en ejecución.")
+        enviar_a_listo_o_bloqueado_o_terminado()
+        proceso_ejecucion = None
+
+    resultado = ', '.join(map(str, terminados))
+    print("Cola de bloqueados Disco duro: " + str(list(Bloqueados.recurso1)))
+    print("Cola de bloqueados Tarjeta gráfica: " + str(list(Bloqueados.recurso2)))
+    print("Cola de bloqueados Impresora: " + str(list(Bloqueados.recurso3)))
+    print("Cola de bloqueados Archivos: " + str(list(Bloqueados.recurso4)))
+    print("Cola de bloqueados Red: " + str(list(Bloqueados.recurso5)))
+    print("procesos terminados: "+str(resultado))
     
     verificar_bloqueados()        
     return redirect(url_for('modelo'))
@@ -207,27 +205,6 @@ def verificar_si_esta_bloqueado(proceso):
         if proceso in recurso_bloqueado:
             return True
     return False
-
-    
-'''
-def verificar_bloqueados():
-    global proceso_bloqueado
-    for recurso in recursos:
-        print(f"Recurso {recurso.get_id_recurso()}")
-        if recurso.get_proceso() is None:
-            cola_bloqueados = Bloqueados.get_cola_bloqueados(recurso.get_id_recurso())
-            
-            if cola_bloqueados:
-                proceso_bloqueado = cola_bloqueados[0]
-                
-                if recurso not in proceso_bloqueado.get_recursos_asignados():
-                    proceso_bloqueado.get_recursos_asignados().append(recurso)
-                    recurso.set_proceso(proceso_bloqueado)
-                    
-                if proceso_bloqueado.tiene_todos_los_recursos():
-                    cola_bloqueados.remove(proceso_bloqueado)
-                    cola_listos.append(proceso_bloqueado)
-                    print(f"Proceso { proceso_bloqueado } movido a la cola de listos.")
-'''    
+   
 if __name__ == '__main__':
     app.run(debug=True)
