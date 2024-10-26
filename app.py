@@ -102,16 +102,18 @@ def de_ejecucion_a_listos():
 def enviar_a_listo_o_bloqueado_o_terminado():
     global proceso_ejecucion
 
-    if proceso_ejecucion.get_tamano_proceso() > 0:
-        no_pasa_a_bloqueados,id_recursos = proceso_ejecucion.no_pasa_a_bloqueados()
+    no_pasa_a_bloqueados,id_recursos = proceso_ejecucion.no_pasa_a_bloqueados()
 
-        if no_pasa_a_bloqueados:
+    if no_pasa_a_bloqueados:
+        proceso_ejecucion.set_tamano_proceso(int (proceso_ejecucion.get_tamano_proceso())-2)
+        if int (proceso_ejecucion.get_tamano_proceso()) > 0:
             de_ejecucion_a_listos()
         else:
-            for idR in id_recursos:
-                Bloqueados.enviar_a_cola_bloqueados(idR,proceso_ejecucion)
+            de_ejecucion_a_terminados()
     else:
-        de_ejecucion_a_terminados()
+        for idR in id_recursos:
+            Bloqueados.enviar_a_cola_bloqueados(idR,proceso_ejecucion)
+    return None
 
 @staticmethod
 def de_ejecucion_a_terminados():
@@ -123,7 +125,6 @@ def de_listos_a_ejecucion():
     global proceso_ejecucion
     if cola_listos:
         proceso_ejecucion = cola_listos.pop(0)
-        proceso_ejecucion.set_tamano_proceso(int (proceso_ejecucion.get_tamano_proceso())-2)
         
 @app.route('/ejecutar_proceso', methods=['POST'])
 def ejecutar_proceso():
@@ -131,8 +132,7 @@ def ejecutar_proceso():
     if not proceso_ejecucion:
         de_listos_a_ejecucion()
     else:
-        enviar_a_listo_o_bloqueado_o_terminado()
-        proceso_ejecucion = None
+        proceso_ejecucion = enviar_a_listo_o_bloqueado_o_terminado()
 
     resultado = ', '.join(map(str, terminados))
     print("Cola de bloqueados Disco duro: " + str(list(Bloqueados.recurso1)))
