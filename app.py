@@ -112,13 +112,13 @@ def enviar_a_listo_o_bloqueado_o_terminado():
     else:
         for idR in id_recursos:
             Bloqueados.enviar_a_cola_bloqueados(idR,proceso_ejecucion)
-        proceso_ejecucion.terminar_ejecucion()
+        proceso_ejecucion.liberar_todos_recursos()
     return None
 
 @staticmethod
 def de_ejecucion_a_terminados():
     terminados.append(proceso_ejecucion)
-    proceso_ejecucion.terminar_ejecucion()
+    proceso_ejecucion.liberar_todos_recursos()
 
 @staticmethod
 def de_listos_a_ejecucion():

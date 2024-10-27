@@ -26,7 +26,7 @@ for proceso in p:
     else:
         for idR in id_recursos:
             Bloqueados.enviar_a_cola_bloqueados(idR,proceso)
-        proceso.terminar_ejecucion()
+        proceso.liberar_todos_recursos()
 
 
 # print(Bloqueados.get_cola_bloqueados("001"))
