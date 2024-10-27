@@ -2,7 +2,6 @@ from flask import Flask, request, render_template, redirect, url_for, jsonify
 from modelo.Procesos import Procesos
 from modelo.Recurso import Recurso
 from modelo.Colas import Bloqueados
-from collections import deque
 from modelo.Memoria import Memoria
 app = Flask(__name__)
 
@@ -76,9 +75,9 @@ def crear_proceso():
     tamano = request.form.get('tamano')
     recurso_seleccionado =  request.form.getlist('recursos')
     
-    recursos_asignados = []
+    # recursos_asignados = []
     recursos_necesarios = []
-
+    
     for recurso_id in recurso_seleccionado:
         recurso = next((r for r in recursos if r.get_id_recurso() == recurso_id), None)
         if recurso:
@@ -87,7 +86,7 @@ def crear_proceso():
     print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, ")
     for recurso in recursos:
         print(f"Recursos: {recurso}")
-    nuevo_proceso = Procesos(id_proceso, nombre, tamano, recursos_asignados, recursos_necesarios)
+    nuevo_proceso = Procesos(id_proceso, nombre, tamano, recursos_necesarios)
     
     cola_listos.append(nuevo_proceso)
     
@@ -99,12 +98,12 @@ def crear_proceso():
 @staticmethod
 def de_ejecucion_a_listos():
     recursos_liberados = proceso_ejecucion.liberar_recursos()
-    recursos_asginados = proceso_ejecucion.get_recursos_asignados()
+    # recursos_asginados = proceso_ejecucion.get_recursos_asignados()
     recursos_necesarios = proceso_ejecucion.get_recursos_necesarios()
     for recurso in recursos_liberados:
         print(f"Recurso { recurso.get_nombre_recurso() } liberado.")
-    for recurso in recursos_asginados:
-        print(f"Recurso { recurso.get_nombre_recurso() } asignado.")
+    # for recurso in recursos_asginados:
+    #     print(f"Recurso { recurso.get_nombre_recurso() } asignado.")
     for recurso in recursos_necesarios:
         print(f"Recurso { recurso.get_nombre_recurso() } necesarios.") 
     cola_listos.append(proceso_ejecucion)
@@ -124,19 +123,20 @@ def enviar_a_listo_o_bloqueado_o_terminado():
     else:
         for idR in id_recursos:
             Bloqueados.enviar_a_cola_bloqueados(idR,proceso_ejecucion)
+        proceso_ejecucion.liberar_todos_recursos()
     return None
 
 @staticmethod
 def de_ejecucion_a_terminados():
     terminados.append(proceso_ejecucion)
-    proceso_ejecucion.terminar_ejecucion()
+    proceso_ejecucion.liberar_todos_recursos()
 
 @staticmethod
 def de_listos_a_ejecucion():
     global proceso_ejecucion
     if cola_listos:
         proceso_ejecucion = cola_listos.pop(0)
-        
+
 @app.route('/ejecutar_proceso', methods=['POST'])
 def ejecutar_proceso():
     global proceso_ejecucion
@@ -198,10 +198,10 @@ def asignar_recurso(proceso_bloqueado, recurso_actual):
         print(f"Recursos necesarios de {proceso_bloqueado.get_nombre_proceso()}: {recurso_necesitado.get_nombre_recurso()}")
     
     recurso_actual.set_proceso(proceso_bloqueado)
-    proceso_bloqueado.agregar_recurso_asignado(recurso_actual)
+    # proceso_bloqueado.agregar_recurso_asignado(recurso_actual)
 
-    for recurso_asignado in proceso_bloqueado.get_recursos_asignados():
-        print(f"Recursos asignados de {proceso_bloqueado.get_nombre_proceso()}: {recurso_asignado.get_nombre_recurso()}")
+    # for recurso_asignado in proceso_bloqueado.get_recursos_asignados():
+    #     print(f"Recursos asignados de {proceso_bloqueado.get_nombre_proceso()}: {recurso_asignado.get_nombre_recurso()}")
     
     if not verificar_si_esta_bloqueado(proceso_bloqueado):
         print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} tiene todos los recursos necesarios, moviéndolo a cola de listos.")
