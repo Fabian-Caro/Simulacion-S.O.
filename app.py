@@ -3,7 +3,10 @@ from modelo.Procesos import Procesos
 from modelo.Recurso import Recurso
 from modelo.Colas import Bloqueados
 from collections import deque
+from modelo.Memoria import Memoria
 app = Flask(__name__)
+
+memoria_instance = Memoria()
 
 cola_listos = []
 cola_bloqueados = []
@@ -59,6 +62,11 @@ def modelo():
         terminados=terminados,
         bloqueados=bloqueados)
 
+@app.route('/memoria', methods=['GET'])
+def memoria():
+    matriz = memoria_instance.obtener_memoria()
+    return render_template('memoria.html', memoria=matriz)
+
 @app.route('/crear_proceso', methods=['POST'])
 def crear_proceso():
     global proceso_ejecucion
@@ -82,6 +90,9 @@ def crear_proceso():
     nuevo_proceso = Procesos(id_proceso, nombre, tamano, recursos_asignados, recursos_necesarios)
     
     cola_listos.append(nuevo_proceso)
+    
+    if not memoria_instance.agregar_proceso(nuevo_proceso.get_id_proceso()):
+        print("No se pudo agregar el proceso a la memoria.")
         
     return redirect(url_for('modelo'))
     
