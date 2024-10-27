@@ -112,7 +112,7 @@ def enviar_a_listo_o_bloqueado_o_terminado():
     else:
         for idR in id_recursos:
             Bloqueados.enviar_a_cola_bloqueados(idR,proceso_ejecucion)
-        # proceso_ejecucion.liberar_todos_recursos()
+        proceso_ejecucion.terminar_ejecucion()
     return None
 
 @staticmethod

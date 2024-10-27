@@ -102,4 +102,5 @@ class Procesos:
     
     def terminar_ejecucion(self):
         for recurso in self.__recursos_necesarios:
-            recurso.set_proceso(None)
+            if recurso.get_proceso()==self:
+                recurso.set_proceso(None)
