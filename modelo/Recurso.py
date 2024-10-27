@@ -15,7 +15,7 @@ class Recurso:
     
     def set_proceso(self, proceso):
         self.__proceso= proceso
-        
+
     def __str__(self):
         # Recorremos la lista de recursos asignados y los convertimos a cadena
         return f"Nombre: {self.get_nombre_recurso()}"
