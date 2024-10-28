@@ -115,7 +115,6 @@ def creacion():
         tamano = request.form.get('tamano')
         recurso_seleccionado =  request.form.getlist('recursos')
         
-        # recursos_asignados = []
         recursos_necesarios = []
         
         for recurso_id in recurso_seleccionado:
@@ -130,7 +129,7 @@ def creacion():
         
         cola_nuevos.append(nuevo_proceso)
         
-        if not memoria_instance.agregar_proceso(nuevo_proceso.get_id_proceso()):
+        if not memoria_instance.agregar_proceso(nuevo_proceso):
             print("No se pudo agregar el proceso a la memoria.")
             
         return redirect(url_for('creacion'))
@@ -179,6 +178,7 @@ def enviar_a_listo_o_bloqueado_o_terminado():
 @staticmethod
 def de_ejecucion_a_terminados():
     terminados.append(proceso_ejecucion)
+    memoria_instance.limpiar_memoria(proceso_ejecucion)
     proceso_ejecucion.liberar_todos_recursos()
 
 @staticmethod
