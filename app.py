@@ -65,8 +65,9 @@ def modelo():
 
 @app.route('/memoria', methods=['GET'])
 def memoria():
-    matriz = memoria_instance.obtener_memoria()
-    return render_template('memoria.html', memoria=matriz)
+    memoria_principal = memoria_instance.obtener_memoria_principal()
+    memoria_virtual = memoria_instance.obtener_memoria_virtual()
+    return render_template('memoria.html', memoria_principal=memoria_principal, memoria_virtual = memoria_virtual)
 
 @app.route('/crear_proceso', methods=['POST'])
 def crear_proceso():
@@ -129,7 +130,7 @@ def creacion():
         
         cola_nuevos.append(nuevo_proceso)
         
-        if not memoria_instance.agregar_proceso(nuevo_proceso):
+        if not memoria_instance.agregar_proceso_aleatorio(nuevo_proceso):
             print("No se pudo agregar el proceso a la memoria.")
             
         return redirect(url_for('creacion'))
