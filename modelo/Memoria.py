@@ -35,13 +35,23 @@ class Memoria:
         return False
     
     def limpiar_memoria(self, proceso):
-        print("Estado de la memoria antes de limpiarla:", self.memoria_principal)
+        print("Estado de la memoria antes de limpiarla:")
+        print("Memoria principal:", self.memoria_principal)
+        print("Memoria virtual:", self.memoria_virtual)
         
         for i in range(len(self.memoria_principal)):
-            # Usamos una lista de comprensión para filtrar los procesos
-            self.memoria_principal[i] = [p for p in self.memoria_principal[i] if p != proceso]
+            for j in range(len(self.memoria_principal[i])):
+                if self.memoria_principal[i][j] == proceso:
+                    self.memoria_principal[i][j] = ""  # Restablece a cadena vacía si coincide con el proceso
                     
-        print("Estado de la memoria después de limpiarla:", self.memoria_principal)
+        for i in range(len(self.memoria_virtual)):
+            for j in range(len(self.memoria_virtual[i])):
+                if self.memoria_virtual[i][j] == proceso:
+                    self.memoria_virtual[i][j] = ""
+    
+        print("Estado de la memoria después de limpiarla:")
+        print("Memoria principal:", self.memoria_principal)
+        print("Memoria virtual:", self.memoria_virtual)
             
     
     def agregar_proceso_aleatorio(self, proceso):
@@ -51,13 +61,13 @@ class Memoria:
             fila_memoria_virtual = random.randint(0,9)
             columna_memoria_virtual = random.randint(0,9)
             
-            if self.memoria_principal[fila_memoria_principal][columna_memoria_principal] is "":  # Verifica si la celda está vacía
+            if self.memoria_principal[fila_memoria_principal][columna_memoria_principal] == "":  # Verifica si la celda está vacía
                 self.memoria_principal[fila_memoria_principal][columna_memoria_principal] = proceso  # Agrega el proceso en la posición elegida
                 print(f"Proceso {proceso} agregado en la posición ({fila_memoria_principal}, {columna_memoria_principal}).")
             else:
                 print(f"Posición ({fila_memoria_principal}, {columna_memoria_principal}) ocupada. Buscando otra posición...")
                 
-            if self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] is "":
+            if self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] == "":
                 self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] = proceso
                 print(f"Proceso {proceso} agregado en la posición ({fila_memoria_virtual}, {columna_memoria_virtual}).")
                 break  # Salir del bucle una vez que se ha agregado el proceso
