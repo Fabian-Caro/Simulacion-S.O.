@@ -2,38 +2,64 @@ import random
 
 class Memoria:
     def __init__(self):
-        self.memoria = [[] for _ in range(10)]
+        self.memoria_principal = [["" for _ in range(5)] for _ in range(5)]
+        self.memoria_virtual = [["" for _ in range(10)] for _ in range(10)]
+        self.inicializar_memoria()
         
-    def obtener_memoria(self):
-        return self.memoria
+    def inicializar_memoria(self):
+        self.memoria_principal[0][0] = "SO"
+        self.memoria_principal[0][1] = "SO"
+        self.memoria_principal[1][0] = "SO"
+        self.memoria_principal[1][1] = "SO"
+        
+    def obtener_memoria_principal(self):
+        return self.memoria_principal
+    
+    def obtener_memoria_virtual(self):
+        return self.memoria_virtual
     
     def agregar_proceso(self, nuevo_proceso):
-        print("Estado de la memoria antes de agregar:", self.memoria)
-        for fila in self.memoria:
+        print("Estado de la memoria antes de agregar:", self.memoria_principal)
+        for fila in self.memoria_principal:
+            if "" in fila:
+                index = fila.index("")
+                fila[index] = nuevo_proceso
+                print("Proceso agregado a la memoria principal:", nuevo_proceso)
+                break
+            
+        for fila in self.memoria_virtual:
             if len(fila) < 10:
-                fila.append(nuevo_proceso)  # Agregamos el id o atributo que necesites
-                print("Proceso agregado a la memoria:", nuevo_proceso)
+                fila.append(nuevo_proceso)
+                print("Proceso agregado a la memoria virtual: ", nuevo_proceso)
                 return True
         return False
     
     def limpiar_memoria(self, proceso):
-        print("Estado de la memoria antes de limpiarla:", self.memoria)
+        print("Estado de la memoria antes de limpiarla:", self.memoria_principal)
         
-        for i in range(len(self.memoria)):
+        for i in range(len(self.memoria_principal)):
             # Usamos una lista de comprensión para filtrar los procesos
-            self.memoria[i] = [p for p in self.memoria[i] if p != proceso]
+            self.memoria_principal[i] = [p for p in self.memoria_principal[i] if p != proceso]
                     
-        print("Estado de la memoria después de limpiarla:", self.memoria)
+        print("Estado de la memoria después de limpiarla:", self.memoria_principal)
             
     
     def agregar_proceso_aleatorio(self, proceso):
         while True:
-            fila = random.randint(0, 9)  # Genera un número aleatorio entre 0 y 9
-            columna = random.randint(0, 9)  # Genera un número aleatorio entre 0 y 9
+            fila_memoria_principal = random.randint(0, 4)  # Genera un número aleatorio entre 0 y 9
+            columna_memoria_principal = random.randint(0, 4)  # Genera un número aleatorio entre 0 y 9
+            fila_memoria_virtual = random.randint(0,9)
+            columna_memoria_virtual = random.randint(0,9)
             
-            if self.memoria[fila][columna] is None:  # Verifica si la celda está vacía
-                self.memoria[fila][columna] = proceso  # Agrega el proceso en la posición elegida
-                print(f"Proceso {proceso} agregado en la posición ({fila}, {columna}).")
+            if self.memoria_principal[fila_memoria_principal][columna_memoria_principal] is "":  # Verifica si la celda está vacía
+                self.memoria_principal[fila_memoria_principal][columna_memoria_principal] = proceso  # Agrega el proceso en la posición elegida
+                print(f"Proceso {proceso} agregado en la posición ({fila_memoria_principal}, {columna_memoria_principal}).")
+            else:
+                print(f"Posición ({fila_memoria_principal}, {columna_memoria_principal}) ocupada. Buscando otra posición...")
+                
+            if self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] is "":
+                self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] = proceso
+                print(f"Proceso {proceso} agregado en la posición ({fila_memoria_virtual}, {columna_memoria_virtual}).")
                 break  # Salir del bucle una vez que se ha agregado el proceso
             else:
-                print(f"Posición ({fila}, {columna}) ocupada. Buscando otra posición...")
+                print(f"Posición ({fila_memoria_virtual}, {columna_memoria_virtual}) ocupada. Buscando otra posición...")
