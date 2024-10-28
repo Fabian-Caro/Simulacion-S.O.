@@ -16,6 +16,16 @@ class Memoria:
                 return True
         return False
     
+    def limpiar_memoria(self, proceso):
+        print("Estado de la memoria antes de limpiarla:", self.memoria)
+        
+        for i in range(len(self.memoria)):
+            # Usamos una lista de comprensión para filtrar los procesos
+            self.memoria[i] = [p for p in self.memoria[i] if p != proceso]
+                    
+        print("Estado de la memoria después de limpiarla:", self.memoria)
+            
+    
     def agregar_proceso_aleatorio(self, proceso):
         while True:
             fila = random.randint(0, 9)  # Genera un número aleatorio entre 0 y 9
