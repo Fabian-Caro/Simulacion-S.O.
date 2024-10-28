@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 memoria_instance = Memoria()
 
+cola_nuevos = []
 cola_listos = []
 cola_bloqueados = []
 proceso_ejecucion = None
@@ -35,6 +36,7 @@ def index():
 
     return render_template(
         'index.html', 
+        procesos_nuevos=cola_nuevos,
         procesos_listos=cola_listos, 
         proceso_ejecucion=proceso_ejecucion, 
         proceso_bloqueado=proceso_bloqueado, 
@@ -94,6 +96,54 @@ def crear_proceso():
         print("No se pudo agregar el proceso a la memoria.")
         
     return redirect(url_for('modelo'))
+
+@app.route('/creacion', methods=['GET', 'POST'])
+def creacion():
+    bloqueados = {
+        'DiscoDuro': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso1],
+        'TarjetaGrafica': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso2],
+        'Impresora': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso3],
+        'Archivos': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso4],
+        'Red': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso5]
+    }
+    
+    if request.method == 'POST':
+        global proceso_ejecucion
+    
+        id_proceso = request.form.get('id')
+        nombre = request.form.get('nombre')
+        tamano = request.form.get('tamano')
+        recurso_seleccionado =  request.form.getlist('recursos')
+        
+        # recursos_asignados = []
+        recursos_necesarios = []
+        
+        for recurso_id in recurso_seleccionado:
+            recurso = next((r for r in recursos if r.get_id_recurso() == recurso_id), None)
+            if recurso:
+                recursos_necesarios.append(recurso)
+
+        print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, ")
+        for recurso in recursos:
+            print(f"Recursos: {recurso}")
+        nuevo_proceso = Procesos(id_proceso, nombre, tamano, recursos_necesarios)
+        
+        cola_nuevos.append(nuevo_proceso)
+        
+        if not memoria_instance.agregar_proceso(nuevo_proceso.get_id_proceso()):
+            print("No se pudo agregar el proceso a la memoria.")
+            
+        return redirect(url_for('creacion'))
+    return render_template(
+        'creacion.html',
+        procesos_nuevos=cola_nuevos,
+        procesos_listos=cola_listos, 
+        proceso_ejecucion=proceso_ejecucion, 
+        proceso_bloqueado=proceso_bloqueado, 
+        recursos=recursos, 
+        terminados=terminados,
+        bloqueados=bloqueados)  # Devuelve la vista cuando es un GET
+
     
 @staticmethod
 def de_ejecucion_a_listos():
@@ -136,10 +186,23 @@ def de_listos_a_ejecucion():
     global proceso_ejecucion
     if cola_listos:
         proceso_ejecucion = cola_listos.pop(0)
+        
+@staticmethod
+def de_nuevo_a_listo():
+    while cola_nuevos:
+        proceso_nuevo = cola_nuevos.pop(0)
+        cola_listos.append(proceso_nuevo)
+        print(f"Proceso {proceso_nuevo.get_id_proceso()} movido a cola de listos.")
+        
+@app.route('/a_listos', methods=['POST'])
+def a_listos():
+    de_nuevo_a_listo()
+    return redirect(url_for('modelo'))
 
 @app.route('/ejecutar_proceso', methods=['POST'])
 def ejecutar_proceso():
     global proceso_ejecucion
+    de_nuevo_a_listo()
     if not proceso_ejecucion:
         de_listos_a_ejecucion()
     else:

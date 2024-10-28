@@ -14,43 +14,14 @@
 <body>
     <header>
         <h1>Estados de Proceso</h1>
-        <nav>
-            <a href="{{ url_for('index') }}">Regresar</a>
-        </nav>
     </header>
 
     {% include 'navbar.html' %}
 
     <div class="container">
-        <div class="row">
-            <section id="agregar-proceso">
-                <h1>Nuevo</h1>
-                <form id="nuevo-proceso-form" action="/crear_proceso" method="post">
-                    <label for="inputId">ID:</label>
-                    <input type="text" id="inputId" name="id" required>
-                    <label for="inputNombre">Nombre:</label>
-                    <input type="text" id="inputNombre" name="nombre" required>
-                    <label for="inputTamano">Tamaño:</label>
-                    <input type="number" id="inputTamano" name="tamano" required>
-                    <label for="inputRecurso">Recursos</label>
-                    {% for recurso in recursos %}
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="recurso{{ loop.index }}" name="recursos"
-                            value="{{ recurso.get_id_recurso() }}">
-                        <label class="form-check-label" for="recurso{{ loop.index }}">
-                            {{ recurso.get_nombre_recurso() }}
-                            {% if recurso.get_proceso() %}
-                            <span class="text-danger">(En uso: {{ recurso.get_proceso().get_nombre_proceso() }})</span>
-                            {% else %}
-                            <span class="text-success">(Disponible)</span>
-                            {% endif %}
-                        </label>
-                    </div>
-                    {% endfor %}
-                    <button type="submit" class="btn btn-primary">Crear</button>
-                </form>
-            </section>
-        </div>
+        <form action="/ejecutar_proceso" method="post">
+            <button type="submit" class="btn btn-success">Ejecutar Procesos</button>
+        </form>
         <section id="proceso-en-listo">
             <h2>Listo</h2>
             <table>
@@ -65,17 +36,16 @@
                 <tbody>
                     {% for proceso in procesos_listos %}
                     <tr>
-
                         <td>{{ proceso.get_id_proceso() }}</td>
                         <td>{{ proceso.get_nombre_proceso() }}</td>
                         <td>{{ proceso.get_tamano_proceso() }}</td>
                         <td>
                             {% for recurso in proceso.get_recursos_necesarios() %}
-                                {% if recurso.get_proceso() == proceso %}
-                                    {{ recurso.get_nombre_recurso() }}: Asignado.
-                                {% else %}
-                                    {{ recurso.get_nombre_recurso() }}: Necesario.
-                                {% endif %}
+                            {% if recurso.get_proceso() == proceso %}
+                            {{ recurso.get_nombre_recurso() }}: Asignado.
+                            {% else %}
+                            {{ recurso.get_nombre_recurso() }}: Necesario.
+                            {% endif %}
                             {% endfor %}
                         </td>
                     </tr>
@@ -102,13 +72,13 @@
                         <td>{{ proceso_ejecucion.get_tamano_proceso() }}</td>
                         <td>
                             {% for recurso in proceso_ejecucion.get_recursos_necesarios() %}
-                                {% if not recurso.get_proceso() %}
-                                    {{ recurso.get_nombre_recurso() }}: Disponible.
-                                {% elif recurso.get_proceso() == proceso_ejecucion %}
-                                    {{ recurso.get_nombre_recurso() }}: Asignado.
-                                {% else %}
-                                    {{ recurso.get_nombre_recurso() }}: Ocupado.
-                                {% endif %}
+                            {% if not recurso.get_proceso() %}
+                            {{ recurso.get_nombre_recurso() }}: Disponible.
+                            {% elif recurso.get_proceso() == proceso_ejecucion %}
+                            {{ recurso.get_nombre_recurso() }}: Asignado.
+                            {% else %}
+                            {{ recurso.get_nombre_recurso() }}: Ocupado.
+                            {% endif %}
                             {% endfor %}
                         </td>
                     </tr>

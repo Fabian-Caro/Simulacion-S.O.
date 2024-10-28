@@ -15,7 +15,7 @@
     <header>
         <h1>Gestión de Procesos</h1>
     </header>
-    
+
     {% include 'navbar.html' %}
 
     <section id="procesos-existentes">
@@ -31,16 +31,31 @@
                 </tr>
             </thead>
             <tbody>
+                {% for proceso in procesos_nuevos %}
+                <tr>
+                    <td>{{ proceso.get_id_proceso() }}</td>
+                    <td>{{ proceso.get_nombre_proceso() }}</td>
+                    <td>{{ proceso.get_tamano_proceso() }}</td>
+                    <td>
+                        {% if proceso.get_recursos_necesarios != 0 %}
+                        {% for recurso in proceso.get_recursos_necesarios() %}
+                        {{ recurso.get_nombre_recurso() }},
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td>Nuevo</td>
+                </tr>
+                {% endfor %}
                 {% for proceso in procesos_listos %}
                 <tr>
                     <td>{{ proceso.get_id_proceso() }}</td>
                     <td>{{ proceso.get_nombre_proceso() }}</td>
                     <td>{{ proceso.get_tamano_proceso() }}</td>
                     <td>
-                        {% if proceso.get_recursos_asignados != 0 %}
-                            {% for recurso in proceso.get_recursos_asignados() %}
-                                {{ recurso.get_nombre_recurso() }},
-                            {% endfor %}
+                        {% if proceso.get_recursos_necesarios != 0 %}
+                        {% for recurso in proceso.get_recursos_necesarios() %}
+                        {{ recurso.get_nombre_recurso() }},
+                        {% endfor %}
                         {% endif %}
                     </td>
                     <td>Listo</td>
@@ -52,8 +67,8 @@
                     <td>{{ proceso_ejecucion.get_nombre_proceso() }}</td>
                     <td>{{ proceso_ejecucion.get_tamano_proceso() }}</td>
                     <td>
-                        {% for recurso in proceso_ejecucion.get_recursos_asignados() %}
-                            {{ recurso.get_nombre_recurso() }}
+                        {% for recurso in proceso_ejecucion.get_recursos_necesarios() %}
+                        {{ recurso.get_nombre_recurso() }}
                         {% endfor %}
                     </td>
                     <td>Ejecución</td>
@@ -134,8 +149,8 @@
                     <td>{{ proceso_ejecucion.get_nombre_proceso() }}</td>
                     <td>{{ proceso_ejecucion.get_tamano_proceso() }}</td>
                     <td>
-                        {% for recurso in proceso_ejecucion.get_recursos_asignados() %}
-                            {{ recurso.get_nombre_recurso() }},
+                        {% for recurso in proceso_ejecucion.get_recursos_necesarios() %}
+                        {{ recurso.get_nombre_recurso() }},
                         {% endfor %}
                     </td>
                 </tr>
@@ -162,9 +177,9 @@
                     <td>{{ recurso.get_nombre_recurso() }}</td>
                     <td>
                         {% if recurso.get_proceso() %}
-                            {{ recurso.get_proceso().get_nombre_proceso() }}
+                        {{ recurso.get_proceso().get_nombre_proceso() }}
                         {% else %}
-                            No asignado
+                        No asignado
                         {% endif %}
                     </td>
                 </tr>
@@ -172,11 +187,6 @@
             </tbody>
         </table>
     </section>
-    <div class="row">
-        <a href="{{ url_for('modelo') }}">
-            <button>Ir a Modelo de 5 Estados</button>
-        </a>
-    </div>
     </div>
 </body>
 
