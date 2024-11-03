@@ -16,12 +16,21 @@ Creación de procesos
             <section id="agregar-proceso">
                 <h1>Nuevo</h1>
                 <form id="nuevo-proceso-form" action="/creacion" method="post">
-                    <label for="inputId">ID:</label>
-                    <input type="text" id="inputId" name="id" required>
-                    <label for="inputNombre">Nombre:</label>
-                    <input type="text" id="inputNombre" name="nombre" required>
-                    <label for="inputTamano">Tamaño:</label>
-                    <input type="number" id="inputTamano" name="tamano" required>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="inputId">ID:</label>
+                            <input type="number" id="inputId" name="id" value="{{ siguiente_id }}" min="1" max="10"
+                                required readonly class="form-control">
+                        </div>
+                        <div class="col-md-8">
+                            <label for="inputNombre">Nombre:</label>
+                            <input type="text" id="inputNombre" name="nombre" required class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="inputTamano">Tamaño:</label>
+                            <input type="number" id="inputTamano" name="tamano" min="1" class="form-control">
+                        </div>
+                    </div>
                     <label for="inputRecurso">Recursos</label>
                     {% for recurso in recursos %}
                     <div class="form-check">

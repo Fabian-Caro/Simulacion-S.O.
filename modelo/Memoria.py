@@ -2,7 +2,7 @@ import random
 
 class Memoria:
     def __init__(self):
-        self.memoria_principal = [["" for _ in range(5)] for _ in range(5)]
+        self.memoria_principal = [["" for _ in range(3)] for _ in range(3)]
         self.memoria_virtual = [["" for _ in range(10)] for _ in range(10)]
         self.inicializar_memoria()
         
@@ -52,24 +52,40 @@ class Memoria:
         print("Estado de la memoria después de limpiarla:")
         print("Memoria principal:", self.memoria_principal)
         print("Memoria virtual:", self.memoria_virtual)
+        
+    def memoria_disponible(self, memoria):
+        for fila in memoria:
+            if "" in fila:
+                return True
+        return False
             
     
     def agregar_proceso_aleatorio(self, proceso):
-        while True:
-            fila_memoria_principal = random.randint(0, 4)  # Genera un número aleatorio entre 0 y 9
-            columna_memoria_principal = random.randint(0, 4)  # Genera un número aleatorio entre 0 y 9
+        if not self.memoria_disponible(self.memoria_principal):
+            print("No hay espacio disponible en la memoria principal.")
+            return False
+        
+        agregado_en_principal = False
+        agregado_en_virtual = False
+        
+        while not (agregado_en_principal and agregado_en_virtual):
+            fila_memoria_principal = random.randint(0, 2)  # Genera un número aleatorio entre 0 y 9
+            columna_memoria_principal = random.randint(0, 2)  # Genera un número aleatorio entre 0 y 9
             fila_memoria_virtual = random.randint(0,9)
             columna_memoria_virtual = random.randint(0,9)
             
-            if self.memoria_principal[fila_memoria_principal][columna_memoria_principal] == "":  # Verifica si la celda está vacía
-                self.memoria_principal[fila_memoria_principal][columna_memoria_principal] = proceso  # Agrega el proceso en la posición elegida
+            if not agregado_en_principal and self.memoria_principal[fila_memoria_principal][columna_memoria_principal] == "":  # Verifica si la celda está vacía
+                self.memoria_principal[fila_memoria_principal][columna_memoria_principal] = proceso # Agrega el proceso en la posición elegida
+                agregado_en_principal = True
                 print(f"Proceso {proceso} agregado en la posición ({fila_memoria_principal}, {columna_memoria_principal}).")
             else:
                 print(f"Posición ({fila_memoria_principal}, {columna_memoria_principal}) ocupada. Buscando otra posición...")
                 
-            if self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] == "":
+            if not agregado_en_virtual and self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] == "":
                 self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] = proceso
+                agregado_en_virtual = True
                 print(f"Proceso {proceso} agregado en la posición ({fila_memoria_virtual}, {columna_memoria_virtual}).")
-                break  # Salir del bucle una vez que se ha agregado el proceso
             else:
                 print(f"Posición ({fila_memoria_virtual}, {columna_memoria_virtual}) ocupada. Buscando otra posición...")
+                
+        return True

@@ -108,6 +108,11 @@ def creacion():
         'Red': [proceso.get_nombre_proceso() for proceso in Bloqueados.recurso5]
     }
     
+    if not len(cola_nuevos):
+        siguiente_id = 1
+    else:
+        siguiente_id = len(cola_nuevos) + 1
+    
     if request.method == 'POST':
         global proceso_ejecucion
     
@@ -128,14 +133,19 @@ def creacion():
             print(f"Recursos: {recurso}")
         nuevo_proceso = Procesos(id_proceso, nombre, tamano, recursos_necesarios)
         
-        cola_nuevos.append(nuevo_proceso)
+        if memoria_instance.memoria_disponible(memoria_instance.memoria_principal):
+            cola_nuevos.append(nuevo_proceso)
         
-        if not memoria_instance.agregar_proceso_aleatorio(nuevo_proceso):
-            print("No se pudo agregar el proceso a la memoria.")
+            if not memoria_instance.agregar_proceso_aleatorio(nuevo_proceso):
+                print("No se pudo agregar el proceso a la memoria.")
+        
+        else:
+            print("No hay espacio disponible en la memoria principal. No se creará el proceso.")
             
         return redirect(url_for('creacion'))
     return render_template(
         'creacion.html',
+        siguiente_id = siguiente_id,
         procesos_nuevos=cola_nuevos,
         procesos_listos=cola_listos, 
         proceso_ejecucion=proceso_ejecucion, 
