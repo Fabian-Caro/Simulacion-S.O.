@@ -1,4 +1,12 @@
 /* estilos.css */
+form input[type="number"],
+div.form-group input[type="number"] {
+    -webkit-appearance: none !important;
+    -moz-appearance: textfield !important;
+    appearance: none;
+    margin: 0;
+}
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
