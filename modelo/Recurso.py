@@ -18,4 +18,12 @@ class Recurso:
 
     def __str__(self):
         # Recorremos la lista de recursos asignados y los convertimos a cadena
-        return f"Nombre: {self.get_nombre_recurso()}"
+        return f"{self.get_nombre_recurso()}"
+
+recursos = [
+            Recurso("001", "Disco duro", None),
+            Recurso("002", "Tarjeta gráfica", None),
+            Recurso("003", "Impresora", None),
+            Recurso("004", "Archivos", None),
+            Recurso("005", "Red", None),    
+        ]

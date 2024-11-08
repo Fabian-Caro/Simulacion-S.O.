@@ -16,9 +16,9 @@
                 <table class="table table-sm caption-top" style="table-layout: auto; width: auto;">
                     <caption>Memoria RAM</caption>
                     <tbody>
-                        {% for i in range(3) %}
+                        {% for i in range(4) %}
                         <tr>
-                            {% for j in range(3) %}
+                            {% for j in range(4) %}
                             <td scope="col">
                                 {% if memoria_principal[i][j] is string %}
                                     {{ memoria_principal[i][j] }} <!-- Muestra "SO" directamente -->
@@ -38,9 +38,9 @@
                 <table class="table table-sm caption-top" style="table-layout: auto; width: auto;">
                     <caption>Memoria ROM</caption>
                     <tbody>
-                        {% for i in range(10) %}
+                        {% for i in range(8) %}
                         <tr>
-                            {% for j in range(10) %}
+                            {% for j in range(8) %}
                             <td scope="col">
                                 {% if memoria_virtual[i][j] != "" %}
                                     {{ memoria_virtual[i][j].get_nombre_proceso()[0] }}{{

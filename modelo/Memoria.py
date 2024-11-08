@@ -2,8 +2,8 @@ import random
 
 class Memoria:
     def __init__(self):
-        self.memoria_principal = [["" for _ in range(3)] for _ in range(3)]
-        self.memoria_virtual = [["" for _ in range(10)] for _ in range(10)]
+        self.memoria_principal = [["" for _ in range(4)] for _ in range(4)]
+        self.memoria_virtual = [["" for _ in range(8)] for _ in range(8)]
         self.inicializar_memoria()
         
     def inicializar_memoria(self):
@@ -28,7 +28,7 @@ class Memoria:
                 break
             
         for fila in self.memoria_virtual:
-            if len(fila) < 10:
+            if len(fila) < 8:
                 fila.append(nuevo_proceso)
                 print("Proceso agregado a la memoria virtual: ", nuevo_proceso)
                 return True
@@ -69,10 +69,10 @@ class Memoria:
         agregado_en_virtual = False
         
         while not (agregado_en_principal and agregado_en_virtual):
-            fila_memoria_principal = random.randint(0, 2)  # Genera un número aleatorio entre 0 y 9
-            columna_memoria_principal = random.randint(0, 2)  # Genera un número aleatorio entre 0 y 9
-            fila_memoria_virtual = random.randint(0,9)
-            columna_memoria_virtual = random.randint(0,9)
+            fila_memoria_principal = random.randint(0, 3)  # Genera un número aleatorio entre 0 y 9
+            columna_memoria_principal = random.randint(0, 3)  # Genera un número aleatorio entre 0 y 9
+            fila_memoria_virtual = random.randint(0,7)
+            columna_memoria_virtual = random.randint(0,7)
             
             if not agregado_en_principal and self.memoria_principal[fila_memoria_principal][columna_memoria_principal] == "":  # Verifica si la celda está vacía
                 self.memoria_principal[fila_memoria_principal][columna_memoria_principal] = proceso # Agrega el proceso en la posición elegida
