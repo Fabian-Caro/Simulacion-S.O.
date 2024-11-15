@@ -59,33 +59,54 @@ class Memoria:
                 return True
         return False
             
+    def paginas(self, nuevo_proceso):
+        auxiliar = nuevo_proceso.get_tamano_proceso()
+        return (auxiliar + 2 - 1) // 2
+ 
+    
+    def agregar_paginas_a_memoria_principal(self, proceso):
+        print(f"Tamaño de memoria: {proceso.get_tamano_proceso()}")
+        agregado_en_principal = 0
+        paginas_en_pricipal = 2
+        while agregado_en_principal < paginas_en_pricipal:
+            fila_memoria_principal = random.randint(0, 3)
+            columna_memoria_principal = random.randint(0, 3)
+            
+            if agregado_en_principal < paginas_en_pricipal:
+                if self.memoria_principal[fila_memoria_principal][columna_memoria_principal] == "":
+                    self.memoria_principal[fila_memoria_principal][columna_memoria_principal] = proceso
+                    agregado_en_principal += 1
+                else:
+                    print(f"Posición ({fila_memoria_principal}, {columna_memoria_principal}) ocupada. Buscando otra posición...")
+        
+        return True
+                    
+    def agregar_paginas_a_memoria_virtual(self, proceso):
+        print(f"Tamaño en virtual: {proceso.get_tamano_proceso()}")
+        valor = self.paginas(proceso)
+        print(f"Paginas a virtual: {valor - 2}")
+        
+        agregado_en_virtual = 0
+        paginas_en_pricipal = 2
+        paginas_en_virtual = valor - paginas_en_pricipal
+        
+        while agregado_en_virtual < paginas_en_virtual:
+            fila_memoria_virtual = random.randint(0,7)
+            columna_memoria_virtual = random.randint(0,7)
+            
+            if agregado_en_virtual < paginas_en_virtual:
+                if self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] == "":
+                    self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] = proceso
+                    agregado_en_virtual += 1
+                else:
+                    print(f"Posición ({fila_memoria_virtual}, {columna_memoria_virtual}) ocupada. Buscando otra posición...")
+                     
+        return True
     
     def agregar_proceso_aleatorio(self, proceso):
         if not self.memoria_disponible(self.memoria_principal):
             print("No hay espacio disponible en la memoria principal.")
             return False
-        
-        agregado_en_principal = False
-        agregado_en_virtual = False
-        
-        while not (agregado_en_principal and agregado_en_virtual):
-            fila_memoria_principal = random.randint(0, 3)  # Genera un número aleatorio entre 0 y 9
-            columna_memoria_principal = random.randint(0, 3)  # Genera un número aleatorio entre 0 y 9
-            fila_memoria_virtual = random.randint(0,7)
-            columna_memoria_virtual = random.randint(0,7)
-            
-            if not agregado_en_principal and self.memoria_principal[fila_memoria_principal][columna_memoria_principal] == "":  # Verifica si la celda está vacía
-                self.memoria_principal[fila_memoria_principal][columna_memoria_principal] = proceso # Agrega el proceso en la posición elegida
-                agregado_en_principal = True
-                print(f"Proceso {proceso} agregado en la posición ({fila_memoria_principal}, {columna_memoria_principal}).")
-            else:
-                print(f"Posición ({fila_memoria_principal}, {columna_memoria_principal}) ocupada. Buscando otra posición...")
-                
-            if not agregado_en_virtual and self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] == "":
-                self.memoria_virtual[fila_memoria_virtual][columna_memoria_virtual] = proceso
-                agregado_en_virtual = True
-                print(f"Proceso {proceso} agregado en la posición ({fila_memoria_virtual}, {columna_memoria_virtual}).")
-            else:
-                print(f"Posición ({fila_memoria_virtual}, {columna_memoria_virtual}) ocupada. Buscando otra posición...")
-                
+        self.agregar_paginas_a_memoria_principal(proceso)
+        self.agregar_paginas_a_memoria_virutal(proceso)                
         return True

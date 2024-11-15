@@ -1,4 +1,3 @@
-# from modelo.Recurso import Recurso
 import random
 
 class Procesos:
@@ -6,7 +5,6 @@ class Procesos:
         self.__id_proceso = id_proceso
         self.__nombre_proceso = nombre_proceso
         self.__tamano_proceso = tamano_proceso
-        # self.__recursos_asignados = recursos_asignados
         self.__recursos_necesarios = recursos_necesarios
         
     def get_id_proceso(self):
@@ -38,21 +36,6 @@ class Procesos:
                 self.__tamano_proceso = 0
         else:
             raise ValueError("Tamaño_proceso debe ser un número.")
-        
-    # def agregar_recurso_asignado(self, recurso):
-    #     return self.__recursos_asignados.append(recurso)
-    
-    # def get_recursos_asignados(self):
-    #     # Devuelve una lista, asegúrate de que nunca devuelva None
-    #     return self.__recursos_asignados if self.__recursos_asignados is not None else []
-
-    
-    # def set_recursos_asignados(self, recursos_asignados):
-    #     self.__recursos_asignados = recursos_asignados
-    #     # if isinstance(recursos_asignados, list) and all(isinstance(r, bool) for r in recursos_asignados):
-    #     #     self.__recursos_asignados = recursos_asignados
-    #     # else:
-    #     #     raise ValueError("recursos_asignados debe ser una lista de booleanos")
         
     def get_nombre_recursos(self):
         return [recurso.get_nombre_recurso() for recurso in self.__recursos_asignados]
