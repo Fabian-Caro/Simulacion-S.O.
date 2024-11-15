@@ -34,7 +34,7 @@ def crear_proceso():
 
         id_proceso = request.form.get('id')
         nombre = request.form.get('nombre')
-        tamano = request.form.get('tamano')
+        tamano = int(request.form.get('tamano'))
         recurso_seleccionado =  request.form.getlist('recursos')
 
         recursos_necesarios = []
@@ -49,15 +49,14 @@ def crear_proceso():
             print(f"Recursos: {recurso}")
 
         nuevo_proceso = Procesos(id_proceso, nombre, tamano, recursos_necesarios)
-
-        if memoria_instance.memoria_disponible(memoria_instance.memoria_principal):
-            cola_nuevos.append(nuevo_proceso)
-
-            if not memoria_instance.agregar_proceso_aleatorio(nuevo_proceso):
-                print("No se pudo agregar el proceso a la memoria.")
-
-        else:
+        
+        if not memoria_instance.memoria_disponible(memoria_instance.memoria_principal):
             print("No hay espacio disponible en la memoria principal. No se creará el proceso.")
+            return redirect(url_for('crear_proceso'))
+        
+        cola_nuevos.append(nuevo_proceso)
+        
+        agregar_a_memoria(nuevo_proceso)
 
         return redirect(url_for('crear_proceso'))
 
@@ -88,7 +87,14 @@ def id_autoincremental():
                                     + len(Bloqueados.recurso3) + len(Bloqueados.recurso4) 
                                     + len(Bloqueados.recurso5)) + len(terminados) + 1
     else:
-        return len(cola_nuevos) + len(terminados) + 1
+        return len(cola_nuevos) + len(terminados) + 1   
+    
+def agregar_a_memoria(nuevo_proceso):
+    if not memoria_instance.agregar_paginas_a_memoria_principal(nuevo_proceso):
+        print("No se pudo agregar el proceso a la memoria principal.")
+
+    if not memoria_instance.agregar_paginas_a_memoria_virtual(nuevo_proceso):
+        print("No se pudo agregar el proceso a la memoria virtual.")
 
 def ejecutar_proceso():
     global proceso_ejecucion
