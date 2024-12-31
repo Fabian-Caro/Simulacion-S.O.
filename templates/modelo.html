@@ -30,15 +30,34 @@
                         <th>ID</th>
                         <th>Nombre</th>
                         <th>Tamaño</th>
+                        <th>Prioridad</th>
                         <th>Recursos</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for proceso in procesos_prioridad1 %}
+                    <tr>
+                        <td>{{ proceso.get_id_proceso() }}</td>
+                        <td>{{ proceso.get_nombre_proceso() }}</td>
+                        <td>{{ proceso.get_tamano_proceso() }}</td>
+                        <td>{{ proceso.get_prioridad() }}</td>
+                        <td>
+                            {% for recurso in proceso.get_recursos_necesarios() %}
+                            {% if recurso.get_proceso() == proceso %}
+                            {{ recurso.get_nombre_recurso() }}: Asignado.
+                            {% else %}
+                            {{ recurso.get_nombre_recurso() }}: Necesario.
+                            {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    {% endfor %}
                     {% for proceso in procesos_listos %}
                     <tr>
                         <td>{{ proceso.get_id_proceso() }}</td>
                         <td>{{ proceso.get_nombre_proceso() }}</td>
                         <td>{{ proceso.get_tamano_proceso() }}</td>
+                        <td>{{ proceso.get_prioridad() }}</td>
                         <td>
                             {% for recurso in proceso.get_recursos_necesarios() %}
                             {% if recurso.get_proceso() == proceso %}
@@ -61,6 +80,7 @@
                         <th>ID</th>
                         <th>Nombre del Proceso</th>
                         <th>Tamaño</th>
+                        <th>Prioridad</th>
                         <th>Recursos Asociados</th>
                     </tr>
                 </thead>
@@ -70,6 +90,7 @@
                         <td>{{ proceso_ejecucion.get_id_proceso() }}</td>
                         <td>{{ proceso_ejecucion.get_nombre_proceso() }}</td>
                         <td>{{ proceso_ejecucion.get_tamano_proceso() }}</td>
+                        <td>{{ proceso_ejecucion.get_prioridad() }}</td>
                         <td>
                             {% for recurso in proceso_ejecucion.get_recursos_necesarios() %}
                             {% if not recurso.get_proceso() %}

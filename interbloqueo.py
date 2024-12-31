@@ -15,15 +15,26 @@ proceso_ejecucion = None
 proceso_bloqueado = None
 
 recursos = [
-    Recurso("001", "Disco duro", None),
-    Recurso("002", "Tarjeta gráfica", None),
-    Recurso("003", "Impresora", None),
-    Recurso("004", "Archivos", None),
-    Recurso("005", "Red", None),
+    Recurso("001", "R1", None),
+    Recurso("002", "R2", None),
+    Recurso("003", "R3", None),
+    Recurso("004", "R4", None),
+    Recurso("005", "R5", None),
 ]
 
 terminados = []
 recursos_libres = []
+
+p1 = Procesos(1, "p1", 10,0, {recursos[0],recursos[1],recursos[2]})
+p2 = Procesos(2, "p2", 10,0, {recursos[0],recursos[1],recursos[2],recursos[3]})
+
+recursos[0].set_proceso(p1)
+recursos[1].set_proceso(p2)
+recursos[2].set_proceso(p1)
+recursos[3].set_proceso(p2)
+
+cola_listos.append(p1)
+cola_listos.append(p2)
 
 @app.route('/', methods=['GET'])
 def index():
@@ -163,9 +174,13 @@ def enviar_a_listo_o_bloqueado_o_terminado():
         else:
             de_ejecucion_a_terminados()
     else:
-        proceso_ejecucion.liberar_recursos_B()
         for idR in id_recursos:
             Bloqueados.enviar_a_cola_bloqueados(idR,proceso_ejecucion)
+        # if Bloqueados.interbloqueados:
+        #     for p in Bloqueados.interbloqueados:
+        #         cola_listos.append(p)
+        #     for i in Bloqueados.romper_interbloqueo(Bloqueados.interbloqueados):
+        #         recursos[i-1].set_proceso(None)
     return None
 
 @staticmethod
