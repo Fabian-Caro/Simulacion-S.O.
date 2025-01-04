@@ -69,7 +69,7 @@ class Procesos:
     
     def set_recursos_necesarios(self, recursos_necesarios):
         self.__recursos_necesarios = recursos_necesarios
-
+    
     def no_pasa_a_bloqueados(self):
         pasa_a_bloqueado = True
         recursos_no_disponibles = []
@@ -92,15 +92,15 @@ class Procesos:
         return recursos_libres
 
     def liberar_recursos_B(self):
-        recursos_libres = []
+        # recursos_libres = []
         for recurso in self.__recursos_necesarios:
             if recurso.get_proceso() == self:
                 if random.random() < 0.5:
                     recurso.set_proceso(None)
-                    recursos_libres.append(recurso)
+                    # recursos_libres.append(recurso)
                     
-        self.__recursos_necesarios = [r for r in self.__recursos_necesarios if r not in recursos_libres]
-        return recursos_libres
+        # self.__recursos_necesarios = [r for r in self.__recursos_necesarios if r not in recursos_libres]
+        # return recursos_libres
     
     def liberar_todos_recursos(self):
         for recurso in self.__recursos_necesarios:

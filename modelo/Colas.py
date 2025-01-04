@@ -34,11 +34,9 @@ class Bloqueados(object):
     @staticmethod
     def interbloqueado(proceso,cola_actual):
         interbloqueado = None
-        print("se envia a cola bloqueado "+str(cola_actual)+": "+str(proceso.get_nombre_proceso()))
         colas = []
         for r in proceso.get_recursos_necesarios():
             if r.get_proceso()==proceso:
-                print(proceso.get_nombre_proceso()+" "+str(r.get_nombre_recurso()))
                 colas.append(r.get_id_recurso())
                 
         for cola in colas:

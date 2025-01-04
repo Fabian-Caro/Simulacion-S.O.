@@ -154,8 +154,11 @@ def creacion():
 def enviar_a_listo_o_bloqueado_o_terminado():
     global proceso_ejecucion
 
-    no_pasa_a_bloqueados,id_recursos = proceso_ejecucion.no_pasa_a_bloqueados()
-
+    no_pasa_a_bloqueados = True
+    
+    if proceso_ejecucion.get_prioridad()==0:
+        no_pasa_a_bloqueados,id_recursos = proceso_ejecucion.no_pasa_a_bloqueados()
+    
     if no_pasa_a_bloqueados:
         proceso_ejecucion.set_tamano_proceso(int (proceso_ejecucion.get_tamano_proceso())-2)
         if int (proceso_ejecucion.get_tamano_proceso()) > 0:
@@ -173,15 +176,15 @@ def de_ejecucion_a_listos():
     recursos_liberados = proceso_ejecucion.liberar_recursos_L()
     # recursos_asginados = proceso_ejecucion.get_recursos_asignados()
     recursos_necesarios = proceso_ejecucion.get_recursos_necesarios()
-    for recurso in recursos_liberados:
-        print(f"Recurso { recurso.get_nombre_recurso() } liberado.")
-    # for recurso in recursos_asginados:
-    #     print(f"Recurso { recurso.get_nombre_recurso() } asignado.")
-    for recurso in recursos_necesarios:
-        print(f"Recurso { recurso.get_nombre_recurso() } necesarios.") 
+    # for recurso in recursos_liberados:
+    #     print(f"Recurso { recurso.get_nombre_recurso() } liberado.")
+    # # for recurso in recursos_asginados:
+    # #     print(f"Recurso { recurso.get_nombre_recurso() } asignado.")
+    # for recurso in recursos_necesarios:
+    #     print(f"Recurso { recurso.get_nombre_recurso() } necesarios.") 
     if proceso_ejecucion.get_prioridad()==0:
         cola_listos.append(proceso_ejecucion)
-    elif proceso_ejecucion.get_prioridad()==1:
+    else:
         cola_prioridad1.append(proceso_ejecucion)
 
 @staticmethod
@@ -211,6 +214,8 @@ def de_nuevo_a_listo():
             cola_listos.append(proceso_nuevo)
         elif proceso_nuevo.get_prioridad()==1:
             cola_prioridad1.append(proceso_nuevo)
+        else:
+            cola_prioridad1.append(proceso_nuevo)
         print(f"Proceso {proceso_nuevo.get_id_proceso()} movido a cola de listos.")
         
 @app.route('/a_listos', methods=['POST'])
@@ -225,15 +230,19 @@ def ejecutar_proceso():
     if not proceso_ejecucion:
         de_listos_a_ejecucion()
     else:
-        proceso_ejecucion = enviar_a_listo_o_bloqueado_o_terminado()
+        if proceso_ejecucion.get_prioridad()==0 and cola_prioridad1[0].get_prioridad()==2:
+            cola_listos.append(proceso_ejecucion)
+            proceso_ejecucion = cola_prioridad1.pop(0)
+        else:
+            proceso_ejecucion = enviar_a_listo_o_bloqueado_o_terminado()
 
-    resultado = ', '.join(map(str, terminados))
-    print("Cola de bloqueados Disco duro: " + str(list(Bloqueados.recurso1)))
-    print("Cola de bloqueados Tarjeta gráfica: " + str(list(Bloqueados.recurso2)))
-    print("Cola de bloqueados Impresora: " + str(list(Bloqueados.recurso3)))
-    print("Cola de bloqueados Archivos: " + str(list(Bloqueados.recurso4)))
-    print("Cola de bloqueados Red: " + str(list(Bloqueados.recurso5)))
-    print("procesos terminados: "+str(resultado))
+    # resultado = ', '.join(map(str, terminados))
+    # print("Cola de bloqueados Disco duro: " + str(list(Bloqueados.recurso1)))
+    # print("Cola de bloqueados Tarjeta gráfica: " + str(list(Bloqueados.recurso2)))
+    # print("Cola de bloqueados Impresora: " + str(list(Bloqueados.recurso3)))
+    # print("Cola de bloqueados Archivos: " + str(list(Bloqueados.recurso4)))
+    # print("Cola de bloqueados Red: " + str(list(Bloqueados.recurso5)))
+    # print("procesos terminados: "+str(resultado))
     
     verificar_bloqueados()        
     return redirect(url_for('modelo'))
