@@ -2,14 +2,15 @@
 import random
 
 class Procesos:
-    def __init__(self, id_proceso, nombre_proceso, tamano_proceso, prioridad, recursos_necesarios):
+    def __init__(self, id_proceso, nombre_proceso, tamano_proceso, prioridad, recursos_necesarios,estado):
         self.__id_proceso = id_proceso
         self.__nombre_proceso = nombre_proceso
         self.__tamano_proceso = tamano_proceso
         self.__prioridad = prioridad
         # self.__recursos_asignados = recursos_asignados
         self.__recursos_necesarios = recursos_necesarios
-        
+        self.estado = estado
+
     def get_id_proceso(self):
         return self.__id_proceso
     
@@ -40,20 +41,6 @@ class Procesos:
         else:
             raise ValueError("Tamaño_proceso debe ser un número.")
         
-    # def agregar_recurso_asignado(self, recurso):
-    #     return self.__recursos_asignados.append(recurso)
-    
-    # def get_recursos_asignados(self):
-    #     # Devuelve una lista, asegúrate de que nunca devuelva None
-    #     return self.__recursos_asignados if self.__recursos_asignados is not None else []
-
-    
-    # def set_recursos_asignados(self, recursos_asignados):
-    #     self.__recursos_asignados = recursos_asignados
-    #     # if isinstance(recursos_asignados, list) and all(isinstance(r, bool) for r in recursos_asignados):
-    #     #     self.__recursos_asignados = recursos_asignados
-    #     # else:
-    #     #     raise ValueError("recursos_asignados debe ser una lista de booleanos")
     def get_prioridad(self):
         return self.__prioridad
     
@@ -69,6 +56,12 @@ class Procesos:
     
     def set_recursos_necesarios(self, recursos_necesarios):
         self.__recursos_necesarios = recursos_necesarios
+    
+    def get_estado(self):
+        return self.estado
+    
+    def set_estado(self,estado):
+        self.estado = estado
     
     def no_pasa_a_bloqueados(self):
         pasa_a_bloqueado = True

@@ -32,7 +32,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for proceso in procesos_nuevos %}
+                {% for proceso in proceso_creado %}
                 <tr>
                     <td>{{ proceso.get_id_proceso() }}</td>
                     <td>{{ proceso.get_nombre_proceso() }}</td>
@@ -45,7 +45,22 @@
                         {% endfor %}
                         {% endif %}
                     </td>
-                    <td>Nuevo</td>
+                    <td>{{ proceso.get_estado() }}</td>
+                </tr>
+                {% endfor %}
+                <!-- 
+                {% for proceso in procesos_prioridad1 %}
+                <tr>
+                    <td>{{ proceso.get_id_proceso() }}</td>
+                    <td>{{ proceso.get_nombre_proceso() }}</td>
+                    <td>{{ proceso.get_tamano_proceso() }}</td>
+                    <td>{{ proceso.get_prioridad() }}</td>
+                    <td>
+                        {% for recurso in proceso.get_recursos_necesarios() %}
+                        {{ recurso.get_nombre_recurso() }},
+                        {% endfor %}
+                    </td>
+                    <td>Listo</td>
                 </tr>
                 {% endfor %}
                 {% for proceso in procesos_listos %}
@@ -55,11 +70,9 @@
                     <td>{{ proceso.get_tamano_proceso() }}</td>
                     <td>{{ proceso.get_prioridad() }}</td>
                     <td>
-                        {% if proceso.get_recursos_necesarios != 0 %}
                         {% for recurso in proceso.get_recursos_necesarios() %}
                         {{ recurso.get_nombre_recurso() }},
                         {% endfor %}
-                        {% endif %}
                     </td>
                     <td>Listo</td>
                 </tr>
@@ -72,7 +85,7 @@
                     <td>{{ proceso_ejecucion.get_prioridad() }}</td>
                     <td>
                         {% for recurso in proceso_ejecucion.get_recursos_necesarios() %}
-                        {{ recurso.get_nombre_recurso() }}
+                        {{ recurso.get_nombre_recurso() }},
                         {% endfor %}
                     </td>
                     <td>Ejecución</td>
@@ -131,7 +144,7 @@
                     <td></td>
                     <td>Terminado</td>
                 </tr>
-                {% endfor %}
+                {% endfor %} -->
             </tbody>
         </table>
     </section>

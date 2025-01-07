@@ -3,8 +3,6 @@ from modelo.Procesos import Procesos
 from modelo.Recurso import Recurso
 
 class Bloqueados(object):
-    # Declaración de variables estáticas
-    # si quieres puedes dejarlo asi : r1 = []
     recurso1 = deque()
     recurso2 = deque()
     recurso3 = deque()
@@ -79,6 +77,7 @@ class Bloqueados(object):
         recursos_interbloqueos = []
 
         for proceso in procesos:
+            proceso.set_estado("listo")
             cola_listos.append(proceso)
             if Bloqueados.recurso1.__contains__(proceso):
                 Bloqueados.recurso1.remove(proceso)
@@ -97,9 +96,6 @@ class Bloqueados(object):
                 recursos_interbloqueos.append(5)
         return recursos_interbloqueos
     
-    def sacar_de_bloqueado1(proceso):
-        
-        Bloqueados.recurso1.remove(proceso)
     @staticmethod
     def get_cola_bloqueados(id_recurso):
         if id_recurso == "001":

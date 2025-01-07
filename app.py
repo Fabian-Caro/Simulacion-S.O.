@@ -13,7 +13,9 @@ cola_prioridad1 = []
 cola_bloqueados = []
 proceso_ejecucion = None
 proceso_bloqueado = None
+idProceso = 1
 
+proceso_creado = []
 recursos = [
     Recurso("001", "Disco duro", None),
     Recurso("002", "Tarjeta gráfica", None),
@@ -43,6 +45,7 @@ def index():
         proceso_ejecucion=proceso_ejecucion,
         proceso_bloqueado=proceso_bloqueado,
         recursos=recursos,
+        proceso_creado = proceso_creado,
         terminados=terminados,
         bloqueados=bloqueados)
 
@@ -63,6 +66,7 @@ def modelo():
         proceso_ejecucion=proceso_ejecucion, 
         proceso_bloqueado=proceso_bloqueado, 
         recursos=recursos, 
+        proceso_creado = proceso_creado,
         terminados=terminados,
         bloqueados=bloqueados)
 
@@ -72,7 +76,7 @@ def memoria():
     memoria_virtual = memoria_instance.obtener_memoria_virtual()
     return render_template('memoria.html', memoria_principal=memoria_principal, memoria_virtual = memoria_virtual)
 
-@app.route('/crear_proceso', methods=['POST'])
+@app.route('/crear_proceso', methods=['POST']) # para que sirve???
 def crear_proceso():
     global proceso_ejecucion
     
@@ -93,10 +97,10 @@ def crear_proceso():
     print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, prioridad: {prioridad}")
     for recurso in recursos:
         print(f"Recursos: {recurso}")
-    nuevo_proceso = Procesos(id_proceso, nombre, tamano, prioridad, recursos_necesarios)
+    nuevo_proceso = Procesos(id_proceso, nombre, tamano, prioridad, recursos_necesarios,"nuevo")
     
     cola_nuevos.append(nuevo_proceso)
-    
+    proceso_creado.append(nuevo_proceso)
     if not memoria_instance.agregar_proceso(nuevo_proceso.get_id_proceso()):
         print("No se pudo agregar el proceso a la memoria.")
         
@@ -114,8 +118,9 @@ def creacion():
     
     if request.method == 'POST':
         global proceso_ejecucion
-    
-        id_proceso = request.form.get('id')
+        global idProceso
+        id_proceso = idProceso
+        idProceso+=1
         nombre = request.form.get('nombre')
         tamano = request.form.get('tamano')
         prioridad = int(request.form.get('prioridad',0))
@@ -128,11 +133,11 @@ def creacion():
             if recurso:
                 recursos_necesarios.append(recurso)
 
-        print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, prioridad: {prioridad}")
-        for recurso in recursos:
-            print(f"Recursos: {recurso}")
-        nuevo_proceso = Procesos(id_proceso, nombre, tamano, prioridad, recursos_necesarios)
-        
+        # print(f"ID: {id_proceso}, Nombre: {nombre}, Tamaño: {tamano}, prioridad: {prioridad}")
+        # for recurso in recursos:
+        #     print(f"Recursos: {recurso}")
+        nuevo_proceso = Procesos(id_proceso, nombre, tamano, prioridad, recursos_necesarios,"nuevo")
+        proceso_creado.append(nuevo_proceso)
         cola_nuevos.append(nuevo_proceso)
         
         if not memoria_instance.agregar_proceso_aleatorio(nuevo_proceso):
@@ -147,10 +152,41 @@ def creacion():
         proceso_ejecucion=proceso_ejecucion, 
         proceso_bloqueado=proceso_bloqueado, 
         recursos=recursos, 
+        proceso_creado = proceso_creado,
         terminados=terminados,
         bloqueados=bloqueados)  # Devuelve la vista cuando es un GET
 
-@staticmethod
+@app.route('/a_listos', methods=['POST'])
+def a_listos():
+    de_nuevo_a_listo()
+    return redirect(url_for('modelo'))
+
+@app.route('/ejecutar_proceso', methods=['POST'])
+def ejecutar_proceso():
+    global proceso_ejecucion
+    de_nuevo_a_listo()
+    if not proceso_ejecucion:
+        if Bloqueados.interbloqueados:
+            romper_interbloqueo()
+        else:
+            de_listos_a_ejecucion()
+    else:
+        if cola_prioridad1 and proceso_ejecucion.get_prioridad()==0 and cola_prioridad1[0].get_prioridad()==2:
+            expulsar_un_proceso_e_ingresar_otro() # envia el proceso en ejecucion a listo sin descontar el tamano
+        else:
+            proceso_ejecucion = enviar_a_listo_o_bloqueado_o_terminado()
+
+    # resultado = ', '.join(map(str, terminados))
+    # print("Cola de bloqueados Disco duro: " + str(list(Bloqueados.recurso1)))
+    # print("Cola de bloqueados Tarjeta gráfica: " + str(list(Bloqueados.recurso2)))
+    # print("Cola de bloqueados Impresora: " + str(list(Bloqueados.recurso3)))
+    # print("Cola de bloqueados Archivos: " + str(list(Bloqueados.recurso4)))
+    # print("Cola de bloqueados Red: " + str(list(Bloqueados.recurso5)))
+    # print("procesos terminados: "+str(resultado))
+    
+    verificar_bloqueados()        
+    return redirect(url_for('modelo'))
+
 def enviar_a_listo_o_bloqueado_o_terminado():
     global proceso_ejecucion
 
@@ -166,12 +202,9 @@ def enviar_a_listo_o_bloqueado_o_terminado():
         else:
             de_ejecucion_a_terminados()
     else:
-        proceso_ejecucion.liberar_recursos_B()
-        for idR in id_recursos:
-            Bloqueados.enviar_a_cola_bloqueados(idR,proceso_ejecucion)
+        de_ejecucion_a_bloqueado(id_recursos)
     return None
 
-@staticmethod
 def de_ejecucion_a_listos():
     recursos_liberados = proceso_ejecucion.liberar_recursos_L()
     # recursos_asginados = proceso_ejecucion.get_recursos_asignados()
@@ -182,70 +215,58 @@ def de_ejecucion_a_listos():
     # #     print(f"Recurso { recurso.get_nombre_recurso() } asignado.")
     # for recurso in recursos_necesarios:
     #     print(f"Recurso { recurso.get_nombre_recurso() } necesarios.") 
+    proceso_ejecucion.set_estado("listo")
     if proceso_ejecucion.get_prioridad()==0:
         cola_listos.append(proceso_ejecucion)
     else:
         cola_prioridad1.append(proceso_ejecucion)
 
-@staticmethod
+def de_ejecucion_a_bloqueado(id_recursos):
+    proceso_ejecucion.liberar_recursos_B()
+    proceso_ejecucion.set_estado("bloqueado")
+    for idR in id_recursos:
+        Bloqueados.enviar_a_cola_bloqueados(idR,proceso_ejecucion)
+
 def de_ejecucion_a_terminados():
+    proceso_ejecucion.set_estado("terminado")
     terminados.append(proceso_ejecucion)
     memoria_instance.limpiar_memoria(proceso_ejecucion)
     proceso_ejecucion.liberar_todos_recursos()
 
-@staticmethod
 def de_listos_a_ejecucion():
     global proceso_ejecucion
-    if Bloqueados.interbloqueados:
-        for i in Bloqueados.recursos_interbloqueos(Bloqueados.interbloqueados,cola_listos):
-            recursos[i-1].set_proceso(None)
-    Bloqueados.interbloqueados = []
-
     if cola_prioridad1:
         proceso_ejecucion = cola_prioridad1.pop(0)
     elif cola_listos:
         proceso_ejecucion = cola_listos.pop(0)
-        
-@staticmethod
+    proceso_ejecucion.set_estado("ejecucion")
+
 def de_nuevo_a_listo():
     while cola_nuevos:
         proceso_nuevo = cola_nuevos.pop(0)
+        proceso_nuevo.set_estado("listo")
         if proceso_nuevo.get_prioridad()==0:
             cola_listos.append(proceso_nuevo)
         elif proceso_nuevo.get_prioridad()==1:
             cola_prioridad1.append(proceso_nuevo)
         else:
             cola_prioridad1.append(proceso_nuevo)
-        print(f"Proceso {proceso_nuevo.get_id_proceso()} movido a cola de listos.")
-        
-@app.route('/a_listos', methods=['POST'])
-def a_listos():
-    de_nuevo_a_listo()
-    return redirect(url_for('modelo'))
+        # print(f"Proceso {proceso_nuevo.get_id_proceso()} movido a cola de listos.")
 
-@app.route('/ejecutar_proceso', methods=['POST'])
-def ejecutar_proceso():
+def romper_interbloqueo():
+    for i in Bloqueados.recursos_interbloqueos(Bloqueados.interbloqueados,cola_listos):
+        recursos[i-1].set_proceso(None)
+    Bloqueados.interbloqueados = []
+
+def expulsar_un_proceso_e_ingresar_otro(): # envia el proceso en ejecucion a listo sin descontar el tamano
     global proceso_ejecucion
-    de_nuevo_a_listo()
-    if not proceso_ejecucion:
-        de_listos_a_ejecucion()
-    else:
-        if proceso_ejecucion.get_prioridad()==0 and cola_prioridad1[0].get_prioridad()==2:
-            cola_listos.append(proceso_ejecucion)
-            proceso_ejecucion = cola_prioridad1.pop(0)
-        else:
-            proceso_ejecucion = enviar_a_listo_o_bloqueado_o_terminado()
 
-    # resultado = ', '.join(map(str, terminados))
-    # print("Cola de bloqueados Disco duro: " + str(list(Bloqueados.recurso1)))
-    # print("Cola de bloqueados Tarjeta gráfica: " + str(list(Bloqueados.recurso2)))
-    # print("Cola de bloqueados Impresora: " + str(list(Bloqueados.recurso3)))
-    # print("Cola de bloqueados Archivos: " + str(list(Bloqueados.recurso4)))
-    # print("Cola de bloqueados Red: " + str(list(Bloqueados.recurso5)))
-    # print("procesos terminados: "+str(resultado))
-    
-    verificar_bloqueados()        
-    return redirect(url_for('modelo'))
+    cola_listos.insert(0,proceso_ejecucion)
+    proceso_ejecucion.liberar_recursos_B()
+    proceso_ejecucion.set_estado("listo")
+
+    proceso_ejecucion = cola_prioridad1.pop(0)
+    proceso_ejecucion.set_estado("ejecucion")
 
 def verificar_bloqueados():
     global proceso_bloqueado
@@ -297,10 +318,10 @@ def asignar_recurso(proceso_bloqueado, recurso_actual):
     if not verificar_si_esta_bloqueado(proceso_bloqueado):
         print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} tiene todos los recursos necesarios, moviéndolo a cola de listos.")
         cola_listos.append(proceso_bloqueado)
+        proceso_bloqueado.set_estado("listo")
     else:
         print(f"Proceso {proceso_bloqueado.get_nombre_proceso()} aún necesita más recursos.")
 
-        
 def verificar_si_esta_bloqueado(proceso):
     # Verifica si el proceso está en alguna de las colas de bloqueados
     for recurso_bloqueado in [Bloqueados.recurso1, Bloqueados.recurso2, Bloqueados.recurso3, Bloqueados.recurso4, Bloqueados.recurso5]:
